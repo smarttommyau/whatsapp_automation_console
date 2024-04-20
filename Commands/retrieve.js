@@ -5,10 +5,11 @@ function retrieveCommand(){
     const description = '<ChatName?>  Retrieve latest messages from chat or all unread';
     const runnable = true;
     const func = Cretrieve;
-    return new command_process.command(key,func,description,false,"",runnable);
+    return new command_process.command(key,func,description,"",false,"",runnable);
 }
 
 async function Cretrieve(client,argv){
+    console.log(argv)
     if(argv[0]=== true){//print all unread messages
         unreadMessages = await util.getUnreadMessages(await client.getChats());
         unreadMessages.forEach(async (message) => {
@@ -40,7 +41,7 @@ async function Cretrieve(client,argv){
             await util.printMessage(message,client);
         });
     }else{
-        return [[new command_process.command([],Cretrieve,"","",true,"retrieve <ChatName?>  Retrieve latest messages from chat or all unread",true)],argv];
+        return [[new command_process.command([],Cretrieve,"","",true,"retrieve <ChatName?>  Retrieve latest messages from chat or all unread",true,false,true)],argv];
     }
 }
 

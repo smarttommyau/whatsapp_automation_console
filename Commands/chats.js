@@ -17,6 +17,10 @@ async function Cchats(client,argv){
         return [[],argv];
     }else if(argv[0]){
         let chats = await util.getChatsbyPartialName(argv[0],client);
+        if(chats.length === 0 || chats == undefined){
+            console.log('Chat not found');
+            return [[],argv];
+        }
         chats.forEach((chat,i) => {
             console.log("%d: %s",i,chat.name);
         });

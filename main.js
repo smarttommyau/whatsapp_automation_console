@@ -3,7 +3,6 @@ const qrcode = require('qrcode-terminal');
 const processCommand = require('./command_process');
 const readline = require('readline');
 const wwebVersion = '2.2412.54';
-let ready = false;
 const client = new Client({
     puppeteer: {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -20,6 +19,7 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
+rl.pause();
 client.initialize();
 
 client.on('loading_screen', (percent, message) => {
@@ -29,7 +29,7 @@ client.on('ready', () => {
     console.log('Welcome to WhatsApp automation, help to get list of commands');
     // processCommand.processCommand(client);
     process.stdout.write('>');
-    ready = true;
+    rl.resume();
 });
 
 client.on('qr', qr => {
@@ -53,15 +53,18 @@ process.exit(0);
 });
 
 rl.on('line', async (input) => {
-    if(!ready){
-        console.log('Please wait for the client to be ready');
-        return;
-    }
     listOfCommands = [
         require('./Commands/send').sendCommand(),
         require('./Commands/retrieve').retrieveCommand(),
         require('./Commands/chats').chatsCommand(),
         require('./Commands/exit').exitCommand()
     ];
-    await processCommand.processCommand(input.trim().split(' '),client,rl,listOfCommands);
+    rl.pause();
+    const subrl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    }); 
+    await processCommand.processCommand(input.trim().split(' '),client,subrl,listOfCommands);
+    process.stdout.write('>');
+    rl.resume();
 });

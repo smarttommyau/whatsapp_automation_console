@@ -3,7 +3,7 @@ const util = require('./Utils');
 //const task_manager = require('./task_manager');
 
 class command{
-    constructor(key=[],func,description="",prompt=">",isarg=false,parent="",runnable=false,readline=false){
+    constructor(key=[],func,description="",prompt=">",isarg=false,parent="",runnable=false,readline=false,mutli=false){
         this.key = key;//can be multiple values
         this.description = description;
         this.prompt = prompt;
@@ -12,6 +12,7 @@ class command{
         this.isarg = isarg;
         this.parent = parent;
         this.readline = readline; 
+        this.multi = mutli;
     }
 }
 
@@ -20,10 +21,21 @@ class command{
 async function processCommand(inputstack,client, readline,listOfCommands,isarg=false,prompt=">",argv=[]){
     if(inputstack.length === 0){
         readline.question(prompt, async (input) => {
-            await processCommand(input.trim().split(' '),client,listOfCommands,isarg,prompt,argv);
+            await processCommand(input.trim().split(' '),client,readline,listOfCommands,isarg,prompt,argv);
         });
     }
-    let command = listOfCommands.find(command => command.key.includes(inputstack[0]));  
+    console.log(inputstack);
+    let command;
+    if(isarg){
+        command = listOfCommands[0]
+        if(command.multi){
+            argv.push(inputstack.join(' '));
+        }else{
+            argv.push(inputstack[0]);
+        }
+    }else{
+        command = listOfCommands.find(command => command.key.includes(inputstack[0]));  
+    }
     if(!command || inputstack[0] === 'help' || inputstack[0] === 'h'){
         console.log('Help Menu:');
         if(listOfCommands.length === 1 && isarg){
@@ -32,10 +44,11 @@ async function processCommand(inputstack,client, readline,listOfCommands,isarg=f
         listOfCommands.forEach(command => {
             console.log('%s - %s',command.key[0],command.description);
         });
+        readline.close();
         return;
     }
     
-    if(inputstack.length === 1 && command.runnable){
+    if((inputstack.length === 1||command.multi) && command.runnable){
         if(command.readline){
             argv.push(readline);
         }
@@ -45,23 +58,23 @@ async function processCommand(inputstack,client, readline,listOfCommands,isarg=f
             argv.pop();
         }
         argv.pop();
+        readline.close();
         return;
     }else{
-        if(isarg){
-            argv.push(inputstack[0]);
-        }
+
         if(command.readline){
             argv.push(readline);
         }
         argv.push(false);//tell it that there is still more to come 
         [listOfCommands,argv] = await command.func(client,argv);
-        if(listOfCommands.length > 0){
-            await processCommand(inputstack.slice(1),client,readline,listOfCommands,command.isarg,command.prompt,argv);
-        }
         if(command.readline){
             argv.pop();
         }
         argv.pop();
+        if(listOfCommands.length > 0){
+            await processCommand(inputstack.slice(1),client,readline,listOfCommands,listOfCommands[0].isarg,command.prompt,argv);
+        }
+        readline.close();
         return;
     }
 }
