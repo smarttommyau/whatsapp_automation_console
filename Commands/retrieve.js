@@ -20,7 +20,7 @@ async function Cretrieve(client,argv){
         });
         return [[],argv];
     }else if(argv[0]){
-        let chat = await util.getChatsbyPartialName(argv[0],client);
+        let chat = await util.getChatsbyPartialName(argv[0].join(' '),client);
         if(chat.length === 0 || chat == undefined){
             console.log('Chat not found');
             return [[],argv];

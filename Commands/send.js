@@ -22,7 +22,7 @@ async function Csend_ChatName(client,argv){
 
 async function Csend_Message(client,argv){
     let chat = await util.getChatsbyPartialName(argv[0],client);
-    let readline = argv[-2];
+    let readline = argv.at(-2);
     if(chat.length === 0 || chat == undefined){
         console.log('Chat not found');
         return [[],argv];

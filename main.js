@@ -15,6 +15,8 @@ const client = new Client({
         remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,
     },
 });
+const task_manager = require('./task_manager');
+const taskManager = new task_manager.task_manager();
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -57,6 +59,7 @@ rl.on('line', async (input) => {
         require('./Commands/send').sendCommand(),
         require('./Commands/retrieve').retrieveCommand(),
         require('./Commands/chats').chatsCommand(),
+        require('./Commands/schedule').scheduleCommand(),
         require('./Commands/exit').exitCommand()
     ];
     rl.pause();
@@ -64,7 +67,7 @@ rl.on('line', async (input) => {
         input: process.stdin,
         output: process.stdout
     }); 
-    await processCommand.processCommand(input.trim().split(' '),client,subrl,listOfCommands);
+    await processCommand.processCommand(input.trim().split(' '),client,subrl,taskManager,listOfCommands);
     process.stdout.write('>');
     rl.resume();
 });

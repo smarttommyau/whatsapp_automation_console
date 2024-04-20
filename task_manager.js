@@ -9,18 +9,12 @@ const {
 class task_manager {
     constructor(){
         this.tasks = [];
-        this.worker = new Worker(__filename,{workerData:0});
     }
     async addTask(interval,chats,repeat,message){
-        this.tasks.push(new tasks(interval,chats,repeat,message,this.worker));
-        await this.worker.on('message',(message) => {
-            if(message.command == 'add'){
-                this.tasks.slice(-1).timeout_id = message.timeout_id;
-            }
-        });
+        this.tasks.push(new tasks(interval,chats,repeat,message));
     }
     removeTask(index){
-        this.worker.postMessage({command:'clear',timeout_id:tasks[index].timeout_id});
+        clearTimeout(this.tasks[index].timeout_id);
         this.tasks.splice(index,1);
     }
     listTasks(){
@@ -43,54 +37,35 @@ class task_manager {
         });
     }
     pauseTask(index){
+        clearTimeout(this.task[index].timeout_id);
         this.tasks[index].paused = true;
-        this.worker.postMessage({command:'clear',timeout_id:tasks[index].timeout_id});
     }
 
 }
 
 class tasks {
-    constructor(interval,chats,repeat,message,worker){
+    constructor(interval,chats,repeat,message){
         this.paused = false;
         this.interval = interval;
         this.chats = chats;
         this.repeat = repeat;
         this.message = message;
-        this.worker = worker;
         interval.date = chrono.parseDate(interval.description);
-        this.worker.postMessage({command:'add',interval_dsc:interval,chats:chats,repeat:repeat,message:message});
-        this.timeout_id = 0;
-    }    
-}
-if(isMainThread){}else{
-    const task_manager = workerData;
-    const tast = async (interval,chats,repeat,message)=>{
-        chats.forEach(async (chat) => {
+        this.timeout_id = setTimeout(scheduleTasks.bind(this),interval.date - Date.now());
+    }
+    async scheduleTasks(){
+        this.chats.forEach(async (chat) => {
             await chat.sendMessage(message);
         });
-            interval.date = chrono.parseDate(interval.description);
+        interval.date = chrono.parseDate(interval.description);
         if(repeat){
-            setTimeout(task,interval.date - new Date(),interval,chats,repeat)
+            this.timeout_id = setTimeout(scheduleTasks.bind(this),interval.date - Date.now());
+        }else{
+            this.paused = true;
         }
     }
-    parentPort.on('message',(message) => {
-        switch(message.command){
-            case 'add': {timeout_id = setTimeout(task, message.interval.date - new Date(), message.interval, message.chats, message.repeat, message.message);
-parentPort.postMessage({
-	command:'add',
-	timeout_id:timeout_id
-});
-break;
 }
-            case 'clear': {clearTimeout(message.timeout_id);
-break;
-}
-            default: {console.log('Unknown command');
-break;
-}
-        }
-    });
-}
+
 
 
 exports.task_manager = task_manager;

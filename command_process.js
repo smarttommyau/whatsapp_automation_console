@@ -1,9 +1,8 @@
-const prompt = require('prompt-sync')();
 const util = require('./Utils');
 //const task_manager = require('./task_manager');
 
 class command{
-    constructor(key=[],func,description="",prompt=">",isarg=false,parent="",runnable=false,readline=false,mutli=false){
+    constructor(key=[],func,description="",prompt=">",isarg=false,parent="",runnable=false,readline=false,mutli=false,tsm=false){
         this.key = key;//can be multiple values
         this.description = description;
         this.prompt = prompt;
@@ -13,16 +12,31 @@ class command{
         this.parent = parent;
         this.readline = readline; 
         this.multi = mutli;
+        this.istsm = tsm;
     }
 }
 
 
+
+//-1 Run(always exists)
+//-2 Readline(exists on request)
+//-3 TaskManager(exists on request)
+//-4 arg inputstack[0](exists on request)
+
 // There should only be one command that accept wildcard arguments
-async function processCommand(inputstack,client, readline,listOfCommands,prompt=">",argv=[]){
+async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
     if(inputstack.length === 0){
+        // console.log('None:');
+        // console.log(inputstack);
         readline.question(prompt, async (input) => {
-            await processCommand(input.trim().split(' '),client,readline,listOfCommands,isarg,prompt,argv);
+            const subrl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            }); 
+            processCommand(input.trim().split(' '),client,subrl,tsm,listOfCommands,isarg,prompt,argv);
         });
+        readline.close();
+        return;
     }
     // console.log(inputstack);
     let command;
@@ -32,7 +46,7 @@ async function processCommand(inputstack,client, readline,listOfCommands,prompt=
     }
     if(command && command.isarg){
         if(command.multi){
-            argv.push(inputstack.join(' '));
+            argv.push(inputstack);
         }else{
             argv.push(inputstack[0]);
         }
@@ -50,6 +64,9 @@ async function processCommand(inputstack,client, readline,listOfCommands,prompt=
     }
     
     if((inputstack.length === 1||command.multi) && command.runnable){
+        if(command.istsm){
+            argv.push(tsm);
+        }
         if(command.readline){
             argv.push(readline);
         }
@@ -58,11 +75,16 @@ async function processCommand(inputstack,client, readline,listOfCommands,prompt=
         if(command.readline){
             argv.pop();
         }
+        if(command.istsm){
+            argv.pop();
+        }
         argv.pop();
         readline.close();
         return;
     }else{
-
+        if(command.istsm){
+            argv.push(tsm);
+        }
         if(command.readline){
             argv.push(readline);
         }
@@ -71,9 +93,12 @@ async function processCommand(inputstack,client, readline,listOfCommands,prompt=
         if(command.readline){
             argv.pop();
         }
+        if(command.istsm){
+            argv.pop();
+        }
         argv.pop();
         if(listOfCommands.length > 0){
-            await processCommand(inputstack.slice(1),client,readline,listOfCommands,command.prompt,argv);
+            await processCommand(inputstack.slice(1),client,readline,tsm,listOfCommands,command.prompt,argv);
         }
         readline.close();
         return;
@@ -85,10 +110,6 @@ async function processCommand(inputstack,client, readline,listOfCommands,prompt=
 //     var myTaskManager = new task_manager.task_manager();
 //             let commands = input.trim().split(' ');
 //             switch(commands[0]){
-//                 case 'schedule':
-//                 case 'sch':
-//                     await scheduleCommand.scheduleCommand(client,myTaskManager,commands.slice(1));
-//                     break;
 //                 case 'tasks':
 //                 case 'ts':
 //                     if(commands.length == 1){
