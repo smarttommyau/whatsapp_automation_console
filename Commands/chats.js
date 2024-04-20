@@ -15,6 +15,16 @@ async function Cchats(client,argv){
             console.log("%d: %s",i,chat.name);
         });
         return [[],argv];
+    }else if(argv[0] === "-u" || argv[0] === "--unread"){
+        let chats = await util.getUnreadChat(client);
+        if(chats.length === 0){
+            console.log('No unread chats');
+            return [[],argv];
+        }
+        chats.forEach((chat,i) => {
+            console.log("%d: %s(%d)",i,chat.name,chat.unreadcount);
+        });        
+        return [[],argv];
     }else if(argv[0]){
         let chats = await util.getChatsbyPartialName(argv[0],client);
         if(chats.length === 0 || chats == undefined){
@@ -26,7 +36,10 @@ async function Cchats(client,argv){
         });
         return [[],argv];
     }else{
-        return [[new command_process.command([],Cchats,"","",true,"chats <Search name?> List|search all chats",true)],argv];
+        return [[
+            new command_process.command([],Cchats,"","",true,"chats <Search name?> List|search all chats",true,false,true),
+            new command_process.command(['-u','--unread'],Cchats,"","",true,"chats -u|--unread",true)
+        ],argv];
     }
 }
 

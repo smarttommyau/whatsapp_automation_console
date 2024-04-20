@@ -18,7 +18,7 @@ class command{
 
 
 
-async function processCommand(inputstack,client, readline,listOfCommands,isarg=false,prompt=">",argv=[]){
+async function processCommand(inputstack,client, readline,listOfCommands,prompt=">",argv=[]){
     if(inputstack.length === 0){
         readline.question(prompt, async (input) => {
             await processCommand(input.trim().split(' '),client,readline,listOfCommands,isarg,prompt,argv);
@@ -26,15 +26,16 @@ async function processCommand(inputstack,client, readline,listOfCommands,isarg=f
     }
     console.log(inputstack);
     let command;
-    if(isarg){
-        command = listOfCommands[0]
+    command = listOfCommands.find(command => command.key.includes(inputstack[0]));  
+    if(!command){
+        command = listOfCommands.find(command => command.isarg&&!command.key.length);
+    }
+    if(command && command.isarg){
         if(command.multi){
             argv.push(inputstack.join(' '));
         }else{
             argv.push(inputstack[0]);
         }
-    }else{
-        command = listOfCommands.find(command => command.key.includes(inputstack[0]));  
     }
     if(!command || inputstack[0] === 'help' || inputstack[0] === 'h'){
         console.log('Help Menu:');
@@ -72,7 +73,7 @@ async function processCommand(inputstack,client, readline,listOfCommands,isarg=f
         }
         argv.pop();
         if(listOfCommands.length > 0){
-            await processCommand(inputstack.slice(1),client,readline,listOfCommands,listOfCommands[0].isarg,command.prompt,argv);
+            await processCommand(inputstack.slice(1),client,readline,listOfCommands,command.prompt,argv);
         }
         readline.close();
         return;
