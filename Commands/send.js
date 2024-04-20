@@ -10,6 +10,7 @@ function sendCommand(){
 
 async function Csend(client,argv){
     const func = Csend_ChatName;
+    const prompt = 'ChatName:';
     return [[new command_process.command([],func,'',prompt,true,'send <ChatName> <Message|  Send a message to a chat')],argv];
 }
 

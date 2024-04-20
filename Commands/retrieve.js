@@ -21,6 +21,7 @@ async function Cretrieve(client,argv){
         return [[],argv];
     }else if(argv[0]){
         let chat = await util.getChatsbyPartialName(argv[0].join(' '),client);
+        const readline = argv.at(-2);
         if(chat.length === 0 || chat == undefined){
             console.log('Chat not found');
             return [[],argv];
@@ -29,14 +30,20 @@ async function Cretrieve(client,argv){
             chat.forEach((chat,i) => {
                 console.log("%d: %s",i,chat.name);
             });
-            readline.question('Select chat by number:', (input) => {
-                let selectedChat = chat[Number.parseInt(input)];
-                if (!selectedChat) {
-                    console.log('Invalid chat number');
-                    return [[],argv];
-                }
-                chat = selectedChat;
-            });
+            const q1 = () => {
+                return new Promise((resolve,reject) => {
+                    readline.question('Select chat by number:', (input) => {
+                        let selectedChat = chat[Number.parseInt(input)];
+                        if (!selectedChat) {
+                            console.log('Invalid chat number');
+                            return [[],argv];
+                        }
+                        chat = selectedChat;
+                        resolve();
+                    });
+                });
+            }
+            await q1();
         }else if(chat.length == 1){
             chat = chat[0];
         }
@@ -52,7 +59,7 @@ async function Cretrieve(client,argv){
                 true,
                 "retrieve <ChatName?>  Retrieve latest messages from chat or all unread",
                 true,
-                false,
+                true,
                 true)
         ]
         ,argv];

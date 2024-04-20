@@ -1,10 +1,4 @@
 const chrono = require('chrono-node');
-const {
-    Worker,
-    isMainThread,
-    parentPort,
-    workerData
-} = require("worker_threads");
 
 class task_manager {
     constructor(){
@@ -51,15 +45,15 @@ class tasks {
         this.repeat = repeat;
         this.message = message;
         interval.date = chrono.parseDate(interval.description);
-        this.timeout_id = setTimeout(scheduleTasks.bind(this),interval.date - Date.now());
+        this.timeout_id = setTimeout(this.scheduleTasks.bind(this),interval.date - Date.now());
     }
     async scheduleTasks(){
         this.chats.forEach(async (chat) => {
-            await chat.sendMessage(message);
+            await chat.sendMessage(this.message);
         });
-        interval.date = chrono.parseDate(interval.description);
-        if(repeat){
-            this.timeout_id = setTimeout(scheduleTasks.bind(this),interval.date - Date.now());
+        this.interval.date = chrono.parseDate(this.interval.description);
+        if(this.repeat){
+            this.timeout_id = setTimeout(this.scheduleTasks.bind(this),this.interval.date - Date.now());
         }else{
             this.paused = true;
         }

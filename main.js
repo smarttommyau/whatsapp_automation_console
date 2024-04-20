@@ -21,17 +21,32 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-rl.pause();
 client.initialize();
 
 client.on('loading_screen', (percent, message) => {
     console.log('LOADING SCREEN', percent, message);
 }); 
+
+const commandpros = async () =>{
+    rl.question('>', async (input) => {
+        listOfCommands = [
+            require('./Commands/send').sendCommand(),
+            require('./Commands/retrieve').retrieveCommand(),
+            require('./Commands/chats').chatsCommand(),
+            require('./Commands/schedule').scheduleCommand(),
+            require('./Commands/exit').exitCommand()
+        ];
+    
+        await processCommand.processCommand(input.trim().split(' '),client,rl,taskManager,listOfCommands);
+        commandpros();
+});
+}
+
 client.on('ready', () => {
     console.log('Welcome to WhatsApp automation, help to get list of commands');
     // processCommand.processCommand(client);
-    process.stdout.write('>');
-    rl.resume();
+    block = false;
+    commandpros();
 });
 
 client.on('qr', qr => {
@@ -54,20 +69,4 @@ console.log('Bye Bye')
 process.exit(0);
 });
 
-rl.on('line', async (input) => {
-    listOfCommands = [
-        require('./Commands/send').sendCommand(),
-        require('./Commands/retrieve').retrieveCommand(),
-        require('./Commands/chats').chatsCommand(),
-        require('./Commands/schedule').scheduleCommand(),
-        require('./Commands/exit').exitCommand()
-    ];
-    rl.pause();
-    const subrl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    }); 
-    await processCommand.processCommand(input.trim().split(' '),client,subrl,taskManager,listOfCommands);
-    process.stdout.write('>');
-    rl.resume();
-});
+

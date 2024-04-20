@@ -6,7 +6,7 @@ function scheduleCommand(){
     const key = ['schedule','sch'];
     const description = '<Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
     const func = Cschedule;
-    const prompt = "Type(once|repeat):"
+    const prompt = ""
     return new command_process.command(key,func,description,prompt,false);
 }
 
@@ -40,7 +40,6 @@ async function Cschedule_Type(client,argv){
 }
 
 async function Cschedule_Type_DateTimeDescription(client,argv){
-    console.log(argv);
     if(argv.at(-2) !== 'end'){
         const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
         const prompt = "(end with \"end\"):";
@@ -119,16 +118,22 @@ async function Cschedule_Type_DateTimeDescription_Chats_Message(client,argv){
     console.log(repeat);
     console.log('Message:');
     console.log(message);
-    readline.question('Confirm?(y/n)', (input) => {
-        if(input == 'y'){
-            console.log('Scheduled');
-            tsm.addTask(interval,chats,repeat,message);
-        }
-        else{
-            console.log('Cancelled');
-        }
-        readline.close();
-    });
+    const question1 = () => {
+        return new Promise((resolve, reject) => {
+            readline.question('Confirm?(y/n)', (input) => {
+                if(input == 'y'){
+                    console.log('Scheduled');
+                    tsm.addTask(interval,chats,repeat,message);
+                }
+                else{
+                    console.log('Cancelled');
+                }
+                resolve();
+            });
+        })
+      }
+    await question1();
+    
     return [[],argv];
 }
 

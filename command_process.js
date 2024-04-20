@@ -4,12 +4,12 @@ const util = require('./Utils');
 class command{
     constructor(key=[],func,description="",prompt=">",isarg=false,parent="",runnable=false,readline=false,mutli=false,tsm=false){
         this.key = key;//can be multiple values
+        this.func = func; 
         this.description = description;
         this.prompt = prompt;
-        this.func = func;
-        this.runnable = runnable;
         this.isarg = isarg;
         this.parent = parent;
+        this.runnable = runnable;
         this.readline = readline; 
         this.multi = mutli;
         this.istsm = tsm;
@@ -25,17 +25,19 @@ class command{
 
 // There should only be one command that accept wildcard arguments
 async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
+    // console.log(inputstack);
     if(inputstack.length === 0){
         // console.log('None:');
         // console.log(inputstack);
-        readline.question(prompt, async (input) => {
-            const subrl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout
-            }); 
-            processCommand(input.trim().split(' '),client,subrl,tsm,listOfCommands,isarg,prompt,argv);
+        const question1 = () =>{    
+            return new Promise((resolve,reject) => {
+                readline.question(prompt, async (input) => {
+                    processCommand(input.trim().split(' '),client,readline,tsm,listOfCommands,prompt,argv);
+                    resolve();
+                });
         });
-        readline.close();
+        };
+        await question1();
         return;
     }
     // console.log(inputstack);
@@ -59,7 +61,6 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
         listOfCommands.forEach(command => {
             console.log('%s - %s',command.key[0],command.description);
         });
-        readline.close();
         return;
     }
     
@@ -79,7 +80,6 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
             argv.pop();
         }
         argv.pop();
-        readline.close();
         return;
     }else{
         if(command.istsm){
@@ -98,9 +98,8 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
         }
         argv.pop();
         if(listOfCommands.length > 0){
-            await processCommand(inputstack.slice(1),client,readline,tsm,listOfCommands,command.prompt,argv);
+            await processCommand(inputstack.slice(1),client,readline,tsm,listOfCommands,listOfCommands.find(command => command.isarg&&!command.key.length).prompt,argv);
         }
-        readline.close();
         return;
     }
 }
