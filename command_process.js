@@ -17,7 +17,7 @@ class command{
 }
 
 
-
+// There should only be one command that accept wildcard arguments
 async function processCommand(inputstack,client, readline,listOfCommands,prompt=">",argv=[]){
     if(inputstack.length === 0){
         readline.question(prompt, async (input) => {
