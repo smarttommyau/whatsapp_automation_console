@@ -66,7 +66,8 @@ async function printMessage(message,client=undefined){
     console.log("-".repeat(process.stdout.columns - 2))
     from ="From:";
     if(client){
-        from += await client.getContactById(message.from).name;
+        contact = await client.getContactById(message.from);
+        from += contact.name||contact.pushname;
     }
     if(message.author){
         from += message.author;

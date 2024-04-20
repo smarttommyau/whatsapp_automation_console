@@ -24,7 +24,7 @@ async function processCommand(inputstack,client, readline,listOfCommands,prompt=
             await processCommand(input.trim().split(' '),client,readline,listOfCommands,isarg,prompt,argv);
         });
     }
-    console.log(inputstack);
+    // console.log(inputstack);
     let command;
     command = listOfCommands.find(command => command.key.includes(inputstack[0]));  
     if(!command){

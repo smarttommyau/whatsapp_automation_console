@@ -9,12 +9,16 @@ function retrieveCommand(){
 }
 
 async function Cretrieve(client,argv){
-    console.log(argv)
-    if(argv[0]=== true){//print all unread messages
+    if(argv[0] === true){//print all unread messages
         unreadMessages = await util.getUnreadMessages(await client.getChats());
+        if(unreadMessages.length === 0){
+            console.log('No unread messages');
+            return [[],argv];
+        }
         unreadMessages.forEach(async (message) => {
             await util.printMessage(message,client);
         });
+        return [[],argv];
     }else if(argv[0]){
         let chat = await util.getChatsbyPartialName(argv[0],client);
         if(chat.length === 0 || chat == undefined){
@@ -40,8 +44,18 @@ async function Cretrieve(client,argv){
         messages.forEach(async(message) => {
             await util.printMessage(message,client);
         });
+        return [[],argv];
     }else{
-        return [[new command_process.command([],Cretrieve,"","",true,"retrieve <ChatName?>  Retrieve latest messages from chat or all unread",true,false,true)],argv];
+        return [[
+            new command_process.command([],
+                Cretrieve,"","",
+                true,
+                "retrieve <ChatName?>  Retrieve latest messages from chat or all unread",
+                true,
+                false,
+                true)
+        ]
+        ,argv];
     }
 }
 
