@@ -52,6 +52,7 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
     if(command && command.isarg){
         if(command.multi){
             argv.push(inputstack);
+            inputstack = [];
         }else{
             argv.push(inputstack[0]);
         }
