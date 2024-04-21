@@ -30,25 +30,31 @@ async function Csend_Message(client,argv){
         console.log('Chat not found');
         return [[],argv];
     }
-    chats.forEach( (chat,i) => {
+    for(const chat of chats){ 
         if(chat.length > 1){
             console.log(chats_str[i]);
             console.log('Multiple chats found:');
             chat.forEach((chat,i) => {
                 console.log("%d: %s",i,chat.name);
             });
-            readline.question('Select chat by number:', (input) => {
-                let selectedChat = chat[Number.parseInt(input)];
-                if (!selectedChat) {
-                    console.log('Invalid chat number');
-                    return [[],argv];
-                }
-                chats[i] = selectedChat;
-            });
+            const q1 = () => {
+                return new Promise((resolve,reject) => {
+                    readline.question('Select chat by number:', (input) => {
+                        let selectedChat = chat[Number.parseInt(input)];
+                        if (!selectedChat) {
+                            console.log('Invalid chat number');
+                            return [[],argv];
+                        }
+                        chats[i] = selectedChat;
+                        resolve();
+                    });
+                });
+            };
+            await q1();
         }else if(chat.length == 1){
             chats[i] = chat[0];
         }
-    });
+    }
     console.log("To:");
     chats.forEach(chat => {
         console.log(chat.name);
@@ -56,17 +62,23 @@ async function Csend_Message(client,argv){
     let message = argv[1];
     console.log(message);
     //confirmation
-    readline.question('Send message? (y/n)', async (input) => {
-        if(input == 'y'){
-            chats.forEach(async chat => {
-                await util.sendMessageWithMention(client,chat,message);
-            })
-            
-            console.log('Message sent');
-        }else{
-            console.log('Message not sent');
-        }
-    });
+    const q2 = () => {
+        return new Promise((resolve,reject) => {
+            readline.question('Send message? (y/n)', (input) => {
+                if(input == 'y'){
+                    chats.forEach(async chat => {
+                        await util.sendMessageWithMention(client,chat,message);
+                    })
+                    
+                    console.log('Message sent');
+                }else{
+                    console.log('Message not sent');
+                }
+                resolve();
+            });
+        });
+    }
+    await q2();
     return [[],argv];
 }
 
