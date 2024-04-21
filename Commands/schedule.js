@@ -68,7 +68,7 @@ async function Cschedule_Type_DateTimeDescription_Chats(client,argv){
     let chats_str = argv.at(-3).split(',');
     const readline = argv.at(-2);
     let chats = await utils.getChatsbyPartialNames(chats_str,client);
-    if(!chats||chats.length === 0){
+    if(!chats||chats.length === 0||(chats.length === 1&& chats[0].length === 0)){
         console.log('Chat not found');
         return [[],argv];
     }
@@ -129,10 +129,11 @@ async function Cschedule_Type_DateTimeDescription_Chats_Message(client,argv){
                     console.log('Cancelled');
                 }
                 resolve();
+                return;
             });
-        })
+        });
       }
-    await question1();
+    await question1();  
     
     return [[],argv];
 }

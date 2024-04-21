@@ -41,6 +41,7 @@ async function Cretrieve(client,argv){
                         }
                         chat = selectedChat;
                         resolve();
+                        return;
                     });
                 });
             }
