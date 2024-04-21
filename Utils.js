@@ -1,5 +1,8 @@
 function processInput(input){
     //split by space but ignore spaces between quotes, and remove the quoting quotes
+    if(!input){
+        return [];
+    }
     let args = input.match(/(?:[^\s"]+|"[^"]*")+/g);
     args = args.map(arg => arg.replace(/"/g,''));
     return args;
