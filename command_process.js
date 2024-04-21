@@ -25,8 +25,7 @@ class command{
 
 // There should only be one command that accept wildcard arguments
 async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
-    // console.log(inputstack);
-    if(inputstack.at(-1) === '///'){
+    if(inputstack.length&&inputstack.at(-1) === '///'){
         return;
     }
     if(inputstack.length === 0&&listOfCommands.find(command => command.isarg&&!command.key.length)){
@@ -35,7 +34,7 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
         const question1 = () =>{    
             return new Promise((resolve,reject) => {
                 readline.question(prompt, async (input) => {
-                    await processCommand(input.trim().split(' '),client,readline,tsm,listOfCommands,prompt,argv);
+                    await processCommand(util.processInput(input),client,readline,tsm,listOfCommands,prompt,argv);
                     resolve();
                     return;
                 });

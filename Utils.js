@@ -1,3 +1,12 @@
+function processInput(input){
+    //split by space but ignore spaces between quotes, and remove the quoting quotes
+    let args = input.match(/(?:[^\s"]+|"[^"]*")+/g);
+    args = args.map(arg => arg.replace(/"/g,''));
+    return args;
+    
+}
+
+
 async function getChatsbyName(name,client,caseSensitive = false){
     const chats = await client.getChats();
     if(!caseSensitive){
@@ -91,7 +100,7 @@ function printMessageBody(message){
     console.log(message.body);
 }
 
-
+exports.processInput = processInput;
 exports.getChatsbyName = getChatsbyName;
 exports.getChatsbyNames = getChatsbyNames;
 exports.getChatsbyPartialName = getChatsbyPartialName;

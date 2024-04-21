@@ -40,7 +40,7 @@ const commandpros = async () =>{
             require('./Commands/exit').exitCommand()
         ];
     
-        await processCommand.processCommand(input.trim().split(' '),client,rl,taskManager,listOfCommands);
+        await processCommand.processCommand(require('./Utils').processInput(input),client,rl,taskManager,listOfCommands);
         resolve();
         await commandpros();
     });
