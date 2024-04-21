@@ -1,4 +1,4 @@
-const util = require('./Utils');
+const utils = require('./Utils');
 //const task_manager = require('./task_manager');
 
 class command{
@@ -34,7 +34,7 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
         const question1 = () =>{    
             return new Promise((resolve,reject) => {
                 readline.question(prompt, async (input) => {
-                    await processCommand(util.processInput(input),client,readline,tsm,listOfCommands,prompt,argv);
+                    await processCommand(utils.processInput(input),client,readline,tsm,listOfCommands,prompt,argv);
                     resolve();
                     return;
                 });

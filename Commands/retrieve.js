@@ -1,5 +1,5 @@
 const command_process = require('../command_process');
-const util = require('../Utils');
+const utils = require('../Utils');
 
 function retrieveCommand(){
     const key = ['retrieve','ret'];
@@ -11,17 +11,17 @@ function retrieveCommand(){
 
 async function Cretrieve(client,argv){
     if(argv[0] === true){//print all unread messages
-        unreadMessages = await util.getUnreadMessages(await client.getChats());
+        unreadMessages = await utils.getUnreadMessages(await client.getChats());
         if(unreadMessages.length === 0){
             console.log('No unread messages');
             return [[],argv];
         }
         for(let message of unreadMessages){
-            await util.printMessage(message,client);
+            await utils.printMessage(message,client);
         }
         return [[],argv];
     }else if(argv[0]){
-        let chat = await util.getChatsbyPartialName(argv[0].join(' '),client);
+        let chat = await utils.getChatsbyPartialName(argv[0].join(' '),client);
         const readline = argv.at(-2);
         if(chat.length === 0 || chat == undefined){
             console.log('Chat not found');
@@ -53,7 +53,7 @@ async function Cretrieve(client,argv){
         console.log('-'.repeat(process.stdout.columns - 2));
         let promises = [];
         for(let message of messages){
-            promises.push(util.printMessage(message,client));
+            promises.push(utils.printMessage(message,client));
         }
         await Promise.all(promises);
         return [[],argv];

@@ -103,20 +103,14 @@ function printMessageBody(message){
     console.log(message.body);
 }
 
-async function getContactbyNumber(number,client){
-    const id = await client.getNumberId(number);
-    if(!id) return undefined;
-    let contact = await client.getContactById(id);
-    return contact;
-}
 
-async function getContactbyName(name,client){
+async function getNumberbyName(name,client){
     const contacts = await client.getContacts();
     let contact = contacts.find(contact => contact.name == name);
     if(contact.length === 0){
         return undefined;
     }
-    return contact;
+    return contact.number;
 }
 
 async function sendMessageWithMention(client,chat,message){//support for mention
@@ -127,8 +121,21 @@ async function sendMessageWithMention(client,chat,message){//support for mention
         return;
     }
     mention = mention.map(mention => mention.slice(1));
-    mention = Promise.all(mention.map(mention => getContactByName(mention,client)|| getContactByNumber(mention,client)));
+    for(const i in mention){
+        if(!isNaN(mention[i])&&isFinite(mention[i])){
+            mention[i] = mention[i] + '@c.us';
+        }else{
+            const number = await getNumberbyName(mention[i],client)
+            //repace the name with the number
+            message = message.replace('@' + mention[i],'@' + number);
+            mention[i] = number + '@c.us';
+        }
+    }
     mention = mention.filter(mention => mention != undefined);
+    if(mention.length === 0){
+        await chat.sendMessage(message);
+        return;
+    }
     await chat.sendMessage(message,{mentions: mention});
     return;
 }

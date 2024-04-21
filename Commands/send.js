@@ -1,5 +1,5 @@
 
-const util = require('../Utils');
+const utils = require('../Utils');
 const command_process = require('../command_process');
 
 function sendCommand(){
@@ -24,7 +24,7 @@ async function Csend_ChatName(client,argv){
 }
 
 async function Csend_Message(client,argv){
-    let chats = await util.getChatsbyPartialNames(argv[0].split(","),client);
+    let chats = await utils.getChatsbyPartialNames(argv[0].split(","),client);
     const readline= argv.at(-2);
     if(!chats||chats.length === 0||(chats.length === 1&& chats[0].length === 0)){
         console.log('Chat not found');
@@ -60,7 +60,8 @@ async function Csend_Message(client,argv){
     chats.forEach(chat => {
         console.log(chat.name);
     });
-    let message = argv[1];
+    let message = argv[1].join(' ');
+    console.log("Message:")
     console.log(message);
     //confirmation
     const q2 = () => {
@@ -68,7 +69,7 @@ async function Csend_Message(client,argv){
             readline.question('Send message? (y/n)', (input) => {
                 if(input == 'y'){
                     chats.forEach(async chat => {
-                        await util.sendMessageWithMention(client,chat,message);
+                        await utils.sendMessageWithMention(client,chat,message);
                     })
                     
                     console.log('Message sent');

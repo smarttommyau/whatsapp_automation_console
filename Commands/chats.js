@@ -1,5 +1,5 @@
 const command_process = require('../command_process');
-util = require('../Utils');
+utils = require('../Utils');
 
 function chatsCommand(){
     const key = ['chats','cht','chts'];
@@ -18,7 +18,7 @@ async function Cchats(client,argv){
         });
         return [[],argv];
     }else if(argv[0] === "-u" || argv[0] === "--unread"){
-        let chats = await util.getUnreadChat(client);
+        let chats = await utils.getUnreadChat(client);
         if(chats.length === 0){
             console.log('No unread chats');
             return [[],argv];
@@ -28,7 +28,7 @@ async function Cchats(client,argv){
         });        
         return [[],argv];
     }else if(argv[0]){
-        let chats = await util.getChatsbyPartialName(argv[0].join(' '),client);
+        let chats = await utils.getChatsbyPartialName(argv[0].join(' '),client);
         if(chats.length === 0 || chats == undefined){
             console.log('Chat not found');
             return [[],argv];
@@ -45,7 +45,7 @@ async function Cchats(client,argv){
             }
             console.log('Unread: %d',chats[0].unreadCount);
             console.log('Last Messages:');
-            await util.printMessage(chats[0].lastMessage,client);
+            await utils.printMessage(chats[0].lastMessage,client);
         }else{
             chats.forEach((chat,i) => {
                 console.log("%d: %s",i,chat.name);
