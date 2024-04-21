@@ -34,20 +34,14 @@ async function Cschedule_Type(client,argv){
     argv[0] = repeat;
     //contruct 
     const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
-    const prompt = "DateTimeDescription(end with \"end\"):";
+    const prompt = "DateTimeDescription(Please quotes it):";
     const func = Cschedule_Type_DateTimeDescription;
     return [[new command_process.command([],func,"",prompt,true,parent)],argv];
 }
 
 async function Cschedule_Type_DateTimeDescription(client,argv){
-    if(argv.at(-2) !== 'end'){
-        const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
-        const prompt = "(end with \"end\"):";
-        const func = Cschedule_Type_DateTimeDescription;
-        return [[new command_process.command([],func,"",prompt,true,parent)],argv];
-    }
     let interval = {description:"",date:new Date()};
-    interval.description = argv.slice(1,-2).join(' ');
+    interval.description = argv.at(-2);
     try{
         interval.date = chrono.parseDate(interval.description);
     } catch (error) {
