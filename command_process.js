@@ -82,16 +82,16 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
             }
             argv.pop();
             return;
-        }else{
-            if(command.istsm){
-                argv.push(tsm);
-            }
-            if(command.readline){
-                argv.push(readline);
-            }
-            argv.push(false);//tell it that there is still more to come 
-            [listOfCommands,argv] = await command.func(client,argv);
-            if(command.readline){
+    }else{
+        if(command.istsm){
+            argv.push(tsm);
+        }
+        if(command.readline){
+            argv.push(readline);
+        }
+        argv.push(false);//tell it that there is still more to come 
+        [listOfCommands,argv] = await command.func(client,argv);
+        if(command.readline){
             argv.pop();
         }
         if(command.istsm){
