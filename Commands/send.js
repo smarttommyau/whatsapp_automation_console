@@ -20,7 +20,7 @@ async function Csend(client,argv){
 async function Csend_ChatName(client,argv){
     const prompt='Message:';
     const func = Csend_Message;
-    return [[new command_process.command([],func,'',prompt,true,'send <ChatName> <Message|  Send a message to a chat',true,true)],argv];
+    return [[new command_process.command([],func,'',prompt,true,'send <ChatName> <Message|  Send a message to a chat',true,true,true)],argv];
 }
 
 async function Csend_Message(client,argv){
@@ -30,7 +30,8 @@ async function Csend_Message(client,argv){
         console.log('Chat not found');
         return [[],argv];
     }
-    for(const chat of chats){ 
+    for(const i in chats){ 
+        let chat = chats[i];
         if(chat.length > 1){
             console.log(chats_str[i]);
             console.log('Multiple chats found:');
