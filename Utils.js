@@ -53,11 +53,12 @@ async function getUnreadChat(client){
 
 async function getUnreadMessages(chats){
     let unreadMessages = [];
-    chats.forEach(async (chat) => {
-        if(chat.unreadCount > 0){
-            unreadMessages = [...unreadMessages, ...await chat.fetchMessages({limit: chat.unreadCount})];
+    for(const chat of chats){
+        if(chat.unreadCount === 0){
+            continue;
         }
-    });
+        unreadMessages = [...unreadMessages, ...await chat.fetchMessages({limit: chat.unreadCount})];
+    }
     return unreadMessages;
 
 }
