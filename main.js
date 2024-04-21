@@ -28,17 +28,21 @@ client.on('loading_screen', (percent, message) => {
 }); 
 
 const commandpros = async () =>{
+    return new Promise((resolve,reject) => {
     rl.question('>', async (input) => {
         listOfCommands = [
             require('./Commands/send').sendCommand(),
             require('./Commands/retrieve').retrieveCommand(),
             require('./Commands/chats').chatsCommand(),
             require('./Commands/schedule').scheduleCommand(),
+            require('./Commands/tasks').tasksCommand(),
             require('./Commands/exit').exitCommand()
         ];
     
         await processCommand.processCommand(input.trim().split(' '),client,rl,taskManager,listOfCommands);
-        commandpros();
+        resolve();
+        await commandpros();
+    });
 });
 }
 

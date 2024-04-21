@@ -24,7 +24,7 @@ class command{
 //-4 arg inputstack[0](exists on request)
 
 // There should only be one command that accept wildcard arguments
-async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
+async function processCommand(inputstack,client, readline,tsm,listOfCommasnds,prompt=">",argv=Array()){
     // console.log(inputstack);
     if(inputstack.length === 0){
         // console.log('None:');
@@ -99,6 +99,8 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
         argv.pop();
         if(listOfCommands.length > 0){
             await processCommand(inputstack.slice(1),client,readline,tsm,listOfCommands,listOfCommands.find(command => command.isarg&&!command.key.length).prompt,argv);
+        }else if(inputstack.length > 1){
+            console.log('Invalid arguments')
         }
         return;
     }
@@ -109,49 +111,7 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
 //     var myTaskManager = new task_manager.task_manager();
 //             let commands = input.trim().split(' ');
 //             switch(commands[0]){
-//                 case 'tasks':
-//                 case 'ts':
-//                     if(commands.length == 1){
-//                         console.log('list - list all tasks');
-//                         console.log('pause <id> - pause a task');
-//                         console.log('resume <id> - resume a task');
-//                         console.log('remove <id> - remove a task');
-//                         break;
-//                     }
-//                     switch(commands[1]){
-//                         case 'list':
-//                         case 'ls':
-//                             myTaskManager.listTasks();
-//                             break;
-//                         case 'pause':
-//                         case 'p':
-//                             if(commands.length == 2){
-//                                 console.log('Usage: pause <id>');
-//                                 break;
-//                             }
-//                             myTaskManager.pauseTask(parseInt(commands[2]));
-//                             break;
-//                         case 'resume':
-//                         case 'r':
-//                             if(commands.length == 2){
-//                                 console.log('Usage: resume <id>');
-//                                 break;
-//                             }
-//                             myTaskManager.resumeTask(parseInt(commands[2]));
-//                             break;
-//                         case 'remove':
-//                         case 'rm':
-//                             if(commands.length == 2){
-//                                 console.log('Usage: remove <id>');
-//                                 break;
-//                             }
-//                             myTaskManager.removeTask(parseInt(commands[2]));
-//                             break;
-//                         default:
-//                             console.log('Unknown command');
-//                             break;
-//                     }
-//                     break;
+
 //                 case 'time':
 //                 case 'tm':
 //                     console.log(new Date().toLocaleString());

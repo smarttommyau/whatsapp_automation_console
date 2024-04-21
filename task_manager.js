@@ -7,8 +7,20 @@ class task_manager {
     async addTask(interval,chats,repeat,message){
         this.tasks.push(new tasks(interval,chats,repeat,message));
     }
+    resumeTask(index){
+        if(this.tasks[index].paused){
+            this.tasks[index].start();
+        }
+    }
+    pauseTask(index){
+        if(!this.tasks[index].paused){
+            this.tasks[index].pause();
+        }
+    }
     removeTask(index){
-        clearTimeout(this.tasks[index].timeout_id);
+        if(!this.tasks[index].paused){
+            this.tasks[index].pause();
+        }
         this.tasks.splice(index,1);
     }
     listTasks(){
@@ -30,10 +42,7 @@ class task_manager {
             console.log('-'.repeat(process.stdout.columns - 2));
         });
     }
-    pauseTask(index){
-        clearTimeout(this.task[index].timeout_id);
-        this.tasks[index].paused = true;
-    }
+
 
 }
 
@@ -46,6 +55,14 @@ class tasks {
         this.message = message;
         interval.date = chrono.parseDate(interval.description);
         this.timeout_id = setTimeout(this.scheduleTasks.bind(this),interval.date - Date.now());
+    }
+    start(){
+        this.paused = false;
+        this.timeout_id = setTimeout(this.scheduleTasks.bind(this),this.interval.date - Date.now());
+    }
+    pause(){
+        clearTimeout(this.timeout_id);
+        this.paused = true;
     }
     async scheduleTasks(){
         this.chats.forEach(async (chat) => {
