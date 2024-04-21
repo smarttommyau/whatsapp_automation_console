@@ -54,6 +54,10 @@ async function Cschedule_Type_DateTimeDescription(client,argv){
         console.log('Invalid interval description');
         return [[],argv];
     }
+    if(interval.date < new Date()){
+        console.log('You cannot setup time in the past');
+        return [[],argv];
+    }
     //drop used data
     argv = argv.slice(0,1);
     argv.push(interval);//save data
