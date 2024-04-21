@@ -1,4 +1,4 @@
-import * as utils from './Utils.js';
+import { processInput } from './Utils.js';
 
 export class command{
     constructor(key=[],func,description="",prompt=">",isarg=false,parent="",runnable=false,readline=false,mutli=false,tsm=false){
@@ -33,7 +33,7 @@ export async function processCommand(inputstack,client, readline,tsm,listOfComma
         const question1 = () =>{    
             return new Promise((resolve,reject) => {
                 readline.question(prompt, async (input) => {
-                    await processCommand(utils.processInput(input),client,readline,tsm,listOfCommands,prompt,argv);
+                    await processCommand(processInput(input),client,readline,tsm,listOfCommands,prompt,argv);
                     resolve();
                     return;
                 });

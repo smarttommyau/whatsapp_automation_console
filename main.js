@@ -58,8 +58,6 @@ const commandpros = async () =>{
 
 client.on('ready', () => {
     console.log('Welcome to WhatsApp automation, help to get list of commands');
-    // processCommand.processCommand(client);
-    block = false;
     commandpros();
 });
 
