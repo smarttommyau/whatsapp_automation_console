@@ -16,6 +16,13 @@ class task_manager {
             this.tasks[index].start();
         }
     }
+    resumeTasks(){
+        this.tasks.forEach(task => {
+            if(task.paused){
+                task.start();
+            }
+        });
+    }
     pauseTask(index){
         if(index >= this.tasks.length || index < 0){
             console.log('Invalid task id');
@@ -24,6 +31,13 @@ class task_manager {
         if(!this.tasks[index].paused){
             this.tasks[index].pause();
         }
+    }
+    pauseTasks(){
+        this.tasks.forEach(task => {
+            if(!task.paused){
+                task.pause();
+            }
+        });
     }
     removeTask(index){
         if(index >= this.tasks.length || index < 0){
@@ -34,6 +48,14 @@ class task_manager {
             this.tasks[index].pause();
         }
         this.tasks.splice(index,1);
+    }
+    removeTasks(){
+        this.tasks.forEach(task => {
+            if(!task.paused){
+                task.pause();
+            }
+        });
+        this.tasks = [];
     }
     listTasks(){
         if(this.tasks.length === 0){

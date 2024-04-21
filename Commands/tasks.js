@@ -84,11 +84,11 @@ async function Ctasks_list(client,argv){
 }
 async function Ctasks_pause(client,argv){
     const n = argv.at(-3);
-    if(n&&isNaN(parseFloat(n)) && isFinite(n)){ //is number?
+    if(n&& n !== '-all' && n !== '-a' &&isNaN(parseFloat(n)) && !isFinite(n)){ //is not a number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }
-    if(!argv[-1].at(-1)){//runnable?
+    if(!argv.at(-1)){//runnable?
         return [[
             new command_process.command(
                 [],
@@ -96,7 +96,7 @@ async function Ctasks_pause(client,argv){
                 '<id>... Pause task(s)',
                 'Task ID|"--all"',
                 true,
-                parent,
+                "tasks",
                 true,
                 false,
                 false,
@@ -106,12 +106,10 @@ async function Ctasks_pause(client,argv){
     }
     const tsm = argv.at(-2);
     if(argv[0] === '--all'){
-        tsm.tasks.forEach((task) => {
-            tsm.pauseTask(task);
-        });
+        tsm.pauseTasks();
     }else{
         argv.slice(0,-2).forEach((id) => {
-            tsm.pauseTask(id);
+            tsm.pauseTask(+id);
         });
     }
     return [[],argv];
@@ -119,11 +117,11 @@ async function Ctasks_pause(client,argv){
 
 async function Ctasks_resume(client,argv){
     const n = argv.at(-3);
-    if(n&&isNaN(parseFloat(n)) && isFinite(n)){ //is number?
+    if(n&&(n !== '-all' || n!== '-a')&&isNaN(parseFloat(n)) && !isFinite(n)){ //is not a number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }
-    if(!argv[-1].at(-1)){//runnable?
+    if(!argv.at(-1)){//runnable?
         return [[
             new command_process.command(
                 [],
@@ -131,7 +129,7 @@ async function Ctasks_resume(client,argv){
                 '<id>... Resume task(s)',
                 'Task ID|"--all"',
                 true,
-                parent,
+                "tasks",
                 true,
                 false,
                 false,
@@ -141,12 +139,10 @@ async function Ctasks_resume(client,argv){
     }
     const tsm = argv.at(-2);
     if(argv[0] === '--all'){
-        tsm.tasks.forEach((task) => {
-            tsm.resumeTask(task);
-        });
+        tsm.resumeTasks();
     }else{
         argv.slice(0,-2).forEach((id) => {
-            tsm.resumeTask(id);
+            tsm.resumeTask(+id);
         });
     }
     return [[],argv];
@@ -154,11 +150,11 @@ async function Ctasks_resume(client,argv){
 
 async function Ctasks_remove(client,argv){
     const n = argv.at(-3);
-    if(n&&isNaN(parseFloat(n)) && isFinite(n)){ //is number?
+    if(n&& n !== '-all' && n !== '-a' &&isNaN(parseFloat(n)) && !isFinite(n)){ //is not a number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }
-    if(!argv[-1].at(-1)){//runnable?
+    if(!argv.at(-1)){//runnable?
         return [[
             new command_process.command(
                 [],
@@ -166,7 +162,7 @@ async function Ctasks_remove(client,argv){
                 '<id>... Remove task(s)',
                 'Task ID|"--all"',
                 true,
-                parent,
+                "tasks",
                 true,
                 false,
                 false,
@@ -175,13 +171,11 @@ async function Ctasks_remove(client,argv){
         ],argv];
     }
     const tsm = argv.at(-2);
-    if(argv[0] === '--all'){
-        tsm.tasks.forEach((task) => {
-            tsm.removeTask(task);
-        });
+    if(n === '--all'||n === '-a'){
+        tsm.removeTasks();
     }else{
         argv.slice(0,-2).forEach((id) => {
-            tsm.removeTask(id);
+            tsm.removeTask(+id);
         });
     }
     return [[],argv];
@@ -189,18 +183,18 @@ async function Ctasks_remove(client,argv){
 
 async function Ctasks_clean(client,argv){
     const n = argv.at(-3);
-    if(n&&isNaN(parseFloat(n)) && isFinite(n)){ //is number?
+    if(n&&isNaN(parseFloat(n)) && !isFinite(n)){ //is number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }
-    if(!argv[-1].at(-1)){//runnable?
+    if(!argv.at(-1)){//runnable?
         return [[
             new command_process.command(
                 [],
                 Ctasks_clean,
                 '<exclude ids> Remove completed tasks',
                 true,
-                parent,
+                "tasks",
                 true,
                 false,
                 false,
@@ -209,7 +203,9 @@ async function Ctasks_clean(client,argv){
         ],argv];
     }
     const tsm = argv.at(-2);
-    const exclude_ids = argv.slice(0,-2).sort((a, b) => b - a );
+    let exclude_ids = argv.slice(0,-2).sort((a, b) => b - a );
+    exclude_ids = exclude_ids.map((id) => +id);
+    //convert exclude_ids to integers
     for (i=tsm.tasks.length -1;i>=0;i--){
         if(tsm.tasks[i].paused&&!exclude_ids.includes(i)){
             tsm.removeTask(i);
