@@ -2,7 +2,7 @@ import webwhats from 'whatsapp-web.js';
 const { Client, LocalAuth } = webwhats;
 import qrcode from 'qrcode-terminal';
 import { processCommand } from './command_process.js';
-import readline from 'readline';
+import readline from 'node:readline';
 import { sendCommand } from './Commands/send.js';
 import { retrieveCommand } from './Commands/retrieve.js';
 import { chatsCommand } from './Commands/chats.js';

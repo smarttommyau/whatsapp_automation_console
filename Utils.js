@@ -5,7 +5,7 @@ export function processInput(input){
         return [];
     }
     let args = input.match(/(?:[^\s"]+|"[^"]*")+/g);
-    args = args.map(arg => arg.replace(/"/g,''));
+    args = args.map(arg => arg.replaceAll('"',''));
     return args;
     
 }
@@ -125,7 +125,7 @@ export async function sendMessageWithMention(client,chat,message){//support for 
     }
     mention = mention.map(mention => mention.slice(1));
     for(const i in mention){
-        if(!isNaN(mention[i])&&isFinite(mention[i])){
+        if(!Number.isNaN(mention[i])&&Number.isFinite(mention[i])){
             mention[i] = mention[i] + '@c.us';
         }else{
             const number = await getNumberbyName(mention[i],client)

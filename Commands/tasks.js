@@ -83,7 +83,7 @@ async function Ctasks_list(client,argv){
 }
 async function Ctasks_pause(client,argv){
     const n = argv.at(-3);
-    if(n&& n !== '-all' && n !== '-a' &&isNaN(parseFloat(n)) && !isFinite(n)){ //is not a number?
+    if(n&& n !== '-all' && n !== '-a' &&Number.isNaN(Number.parseFloat(n)) && !Number.isFinite(n)){ //is not a number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }
@@ -116,7 +116,7 @@ async function Ctasks_pause(client,argv){
 
 async function Ctasks_resume(client,argv){
     const n = argv.at(-3);
-    if(n&&(n !== '-all' || n!== '-a')&&isNaN(parseFloat(n)) && !isFinite(n)){ //is not a number?
+    if(n&&(n !== '-all' || n!== '-a')&&Number.isNaN(Number.parseFloat(n)) && !Number.isFinite(n)){ //is not a number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }
@@ -149,7 +149,7 @@ async function Ctasks_resume(client,argv){
 
 async function Ctasks_remove(client,argv){
     const n = argv.at(-3);
-    if(n&& n !== '-all' && n !== '-a' &&isNaN(parseFloat(n)) && !isFinite(n)){ //is not a number?
+    if(n&& n !== '-all' && n !== '-a' &&Number.isNaN(Number.parseFloat(n)) && !Number.isFinite(n)){ //is not a number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }
@@ -182,7 +182,7 @@ async function Ctasks_remove(client,argv){
 
 async function Ctasks_clean(client,argv){
     const n = argv.at(-3);
-    if(n&&isNaN(parseFloat(n)) && !isFinite(n)){ //is number?
+    if(n&&Number.isNaN(Number.parseFloat(n)) && !Number.isFinite(n)){ //is number?
         console.log('Invalid argument, %s',n);
         return [[],argv];
     }

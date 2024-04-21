@@ -23,11 +23,11 @@ export class command{
 //-4 arg inputstack[0](exists on request)
 
 // There should only be one command that accept wildcard arguments
-export async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
+export async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=[]){
     if(inputstack.length&&inputstack.at(-1) === '///'){
         return;
     }
-    if(inputstack.length === 0&&listOfCommands.find(command => command.isarg&&!command.key.length)){
+    if(inputstack.length === 0&&listOfCommands.some(command => command.isarg&&!command.key.length)){
         // console.log('None:');
         // console.log(inputstack);
         const question1 = () =>{    

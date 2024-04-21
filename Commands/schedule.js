@@ -99,7 +99,7 @@ async function Cschedule_Type_DateTimeDescription_Chats(client,argv){
     //drop used data
     argv = argv.slice(0,-3);
     argv.push(chats);//save data
-    argv = argv.concat([false,false]);//push random junk
+    argv = [...argv, false, false];//push random junk
     const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
     const prompt = "Message:";
     const func = Cschedule_Type_DateTimeDescription_Chats_Message;
