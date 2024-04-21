@@ -1,11 +1,12 @@
 const chrono = require('chrono-node');
-
+const util = require('./Utils');
 class task_manager {
-    constructor(){
+    constructor(client){
         this.tasks = [];
+        this.client
     }
     async addTask(interval,chats,repeat,message){
-        this.tasks.push(new tasks(interval,chats,repeat,message));
+        this.tasks.push(new tasks(interval,chats,repeat,message,client));
     }
     resumeTask(index){
         if(index >= this.tasks.length || index < 0){
@@ -81,14 +82,16 @@ class task_manager {
 }
 
 class tasks {
-    constructor(interval,chats,repeat,message){
+    constructor(interval,chats,repeat,message,client){
         this.paused = false;
         this.interval = interval;
         this.chats = chats;
         this.repeat = repeat;
         this.message = message;
+        this.client = client;
         interval.date = chrono.parseDate(interval.description);
         this.timeout_id = setTimeout(this.scheduleTasks.bind(this),interval.date - Date.now());
+        
     }
     start(){
         this.paused = false;
@@ -100,7 +103,8 @@ class tasks {
     }
     async scheduleTasks(){
         this.chats.forEach(async (chat) => {
-            await chat.sendMessage(this.message);
+            // await chat.sendMessage(this.message);
+            await util.sendMessageWithMention(this.client,chat,this.message);
         });
         this.interval.date = chrono.parseDate(this.interval.description);
         if(this.repeat){

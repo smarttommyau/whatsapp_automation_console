@@ -16,7 +16,7 @@ const client = new Client({
     },
 });
 const task_manager = require('./task_manager');
-const taskManager = new task_manager.task_manager();
+const taskManager = new task_manager.task_manager(client);
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
