@@ -6,7 +6,7 @@ export class task_manager {
         this.client
     }
     async addTask(interval,chats,repeat,message){
-        this.tasks.push(new tasks(interval,chats,repeat,message,client));
+        this.tasks.push(new tasks(interval,chats,repeat,message,this.client));
     }
     resumeTask(index){
         if(index >= this.tasks.length || index < 0){
