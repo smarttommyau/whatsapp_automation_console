@@ -24,7 +24,7 @@ async function Cchats(client,argv){
             return [[],argv];
         }
         chats.forEach((chat,i) => {
-            console.log("%d: %s(%d)",i,chat.name,chat.unreadcount);
+            console.log("%d: %s(%d)",i,chat.name,chat.unreadCount);
         });        
         return [[],argv];
     }else if(argv[0]){

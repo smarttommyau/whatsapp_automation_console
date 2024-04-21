@@ -47,15 +47,15 @@ async function getChatsbyPartialNames(names,client,caseSensitive = false){
 
 async function getUnreadChat(client){
     let chats = await client.getChats();
-    return chats.filter(chat => chat.unreadcount > 0);
+    return chats.filter(chat => chat.unreadCount > 0);
 }
 
 
 async function getUnreadMessages(chats){
     let unreadMessages = [];
     chats.forEach(async (chat) => {
-        if(chat.unreadcount > 0){
-            unreadMessages = [...unreadMessages, ...await chat.fetchMessages({limit: chat.unreadcount})];
+        if(chat.unreadCount > 0){
+            unreadMessages = [...unreadMessages, ...await chat.fetchMessages({limit: chat.unreadCount})];
         }
     });
     return unreadMessages;
