@@ -8,16 +8,28 @@ class task_manager {
         this.tasks.push(new tasks(interval,chats,repeat,message));
     }
     resumeTask(index){
+        if(index >= this.tasks.length || index < 0){
+            console.log('Invalid task id');
+            return;
+        }
         if(this.tasks[index].paused){
             this.tasks[index].start();
         }
     }
     pauseTask(index){
+        if(index >= this.tasks.length || index < 0){
+            console.log('Invalid task id');
+            return;
+        }
         if(!this.tasks[index].paused){
             this.tasks[index].pause();
         }
     }
     removeTask(index){
+        if(index >= this.tasks.length || index < 0){
+            console.log('Invalid task id');
+            return;
+        }
         if(!this.tasks[index].paused){
             this.tasks[index].pause();
         }
