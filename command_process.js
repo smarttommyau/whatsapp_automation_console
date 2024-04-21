@@ -26,6 +26,9 @@ class command{
 // There should only be one command that accept wildcard arguments
 async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
     // console.log(inputstack);
+    if(inputstack.at(-1) === '///'){
+        return;
+    }
     if(inputstack.length === 0&&listOfCommands.find(command => command.isarg&&!command.key.length)){
         // console.log('None:');
         // console.log(inputstack);
