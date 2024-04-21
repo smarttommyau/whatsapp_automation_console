@@ -39,7 +39,7 @@ client.on('loading_screen', (percent, message) => {
 const commandpros = async () =>{
     return new Promise((resolve,reject) => {
     rl.question('>', async (input) => {
-        listOfCommands = [
+        const listOfCommands = [
             sendCommand(),
             retrieveCommand(),
             chatsCommand(),
