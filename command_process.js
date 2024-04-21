@@ -32,8 +32,9 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
         const question1 = () =>{    
             return new Promise((resolve,reject) => {
                 readline.question(prompt, async (input) => {
-                    processCommand(input.trim().split(' '),client,readline,tsm,listOfCommands,prompt,argv);
+                    await processCommand(input.trim().split(' '),client,readline,tsm,listOfCommands,prompt,argv);
                     resolve();
+                    return;
                 });
         });
         };
