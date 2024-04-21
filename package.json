@@ -11,12 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@darkeyedevelopers/natural-cron.js": "^1.1.0",
     "chrono-node": "^2.7.5",
-    "cronstrue": "^2.49.0",
-    "node-cron": "^3.0.3",
-    "prompt-sync": "^4.2.0",
     "qrcode-terminal": "^0.12.0",
+    "terminal-image": "^2.0.0",
     "whatsapp-web.js": "^1.23.0"
   }
 }
