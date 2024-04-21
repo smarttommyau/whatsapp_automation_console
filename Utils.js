@@ -63,7 +63,7 @@ async function getUnreadMessages(chats){
 }
 
 async function printMessage(message,client=undefined){
-    console.log("-".repeat(process.stdout.columns - 2))
+    // console.log("-".repeat(process.stdout.columns - 2))
     from ="From:";
     if(client){
         contact = await client.getContactById(message.from);

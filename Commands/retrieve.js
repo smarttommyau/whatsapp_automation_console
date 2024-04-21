@@ -50,6 +50,7 @@ async function Cretrieve(client,argv){
             chat = chat[0];
         }
         let messages = await chat.fetchMessages({limit: 10});
+        console.log('-'.repeat(process.stdout.columns - 2));
         messages.forEach(async(message) => {
             await util.printMessage(message,client);
         });

@@ -45,7 +45,7 @@ async function Cchats(client,argv){
             }
             console.log('Unread: %d',chats[0].unreadCount);
             console.log('Last Messages:');
-            util.printMessage(chats[0].lastMessage,client);
+            await util.printMessage(chats[0].lastMessage,client);
         }else{
             chats.forEach((chat,i) => {
                 console.log("%d: %s",i,chat.name);
