@@ -11,7 +11,7 @@ export function retrieveCommand(){
 
 async function Cretrieve(client,argv){
     if(argv[0] === true){//print all unread messages
-        unreadMessages = await getUnreadMessages(await client.getChats());
+        const unreadMessages = await getUnreadMessages(await client.getChats());
         if(unreadMessages.length === 0){
             console.log('No unread messages');
             return [[],argv];
@@ -50,17 +50,19 @@ async function Cretrieve(client,argv){
             chat = chat[0];
         }
         let messages = await chat.fetchMessages({limit: 10});
-        console.log('-'.repeat(process.stdout.columns - 2));
         let promises = [];
         for(let message of messages){
             promises.push(printMessage(message,client));
         }
-        await Promise.all(promises);
+        console.log('retriving resultfrom chat:',chat.name);
+        const buffer = await Promise.all(promises);
+        console.log('-'.repeat(process.stdout.columns - 2));
+        console.log(buffer.join());
         return [[],argv];
     }else{
         return [[
             new command([],
-                Cretrieve,"","",
+                Cretrieve,"",
                 true,
                 "retrieve <ChatName?>  Retrieve latest messages from chat or all unread",
                 true,

@@ -54,8 +54,8 @@ async function Cchats(client,argv){
         return [[],argv];
     }else{
         return [[
-            new command([],Cchats,"","",true,"chats <Search name?> List|search all chats",true,false,true),
-            new command(['-u','--unread'],Cchats,"","",true,"chats -u|--unread",true)
+            new command([],Cchats,"",true,"chats <Search name?> List|search all chats",true,false,true),
+            new command(['-u','--unread'],Cchats,"",true,"chats -u|--unread",true)
         ],argv];
     }
 }

@@ -1,4 +1,6 @@
 import terminalImage from 'terminal-image';
+import { Buffer } from 'node:buffer';
+import sharp from 'sharp';
 export function processInput(input){
     //split by space but ignore spaces between quotes, and remove the quoting quotes
     if(!input){
@@ -78,10 +80,9 @@ export async function getUnreadMessages(chats){
 
 export async function printMessage(message,client=undefined){
     // console.log("-".repeat(process.stdout.columns - 2))
-    let 
-    from ="From:";
+    let from ="From:";
     if(client){
-        contact = await client.getContactById(message.from);
+        const contact = await client.getContactById(message.from);
         from += contact.name||contact.pushname;
     }
     if(message.author){
@@ -90,20 +91,31 @@ export async function printMessage(message,client=undefined){
         }
         from += message.author;
     }
-    console.log(from);
-    console.log("Date:" + new Date(message.timestamp*1000).toLocaleString());
-    await printMessageBody(message);
-    console.log("-".repeat(process.stdout.columns - 2));
+    let buffer = ""
+    buffer += from + '\n';
+    buffer += "Date:" + new Date(message.timestamp*1000).toLocaleString() + '\n';
+    buffer += await printMessageBody(message);
+    buffer += "-".repeat(process.stdout.columns - 2) + '\n';
+    return buffer;
 }
 
-export async function printMessageBody(message){
+async function printMessageBody(message){
+    let buffer = ""
     if(message.hasMedia){
-        console.log('>Media message<');
-        const media = message.downloadMedia();
-        const image = await terminal_image.buffer(media)
-        console.log(image);
+        buffer += '>Media message<' + '\n';
+        const media = await message.downloadMedia();
+        let image;
+        if(media.mimetype.includes('gif')){
+            image = await terminalImage.gifbuffer(Buffer.from(media.data,'base64'),{height: '30%'})
+        }else if(media.mimetype.includes('/png') || media.mimetype.includes('jpg')){
+            image = await terminalImage.buffer(Buffer.from(media.data,'base64'),{height: '30%'})
+        }else{
+            image = await terminalImage.buffer(await sharp(Buffer.from(media.data,'base64')).png().toBuffer(),{height: '30%'});
+        }
+        buffer += image.trim()+ '\n';
     }
-    console.log(message.body);
+    buffer += message.body+'\n';
+    return buffer;
 }
 
 
