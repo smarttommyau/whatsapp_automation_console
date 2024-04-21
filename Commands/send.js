@@ -25,6 +25,7 @@ async function Csend_ChatName(client,argv){
 
 async function Csend_Message(client,argv){
     let chats = await util.getChatsbyPartialNames(argv[0].split(","),client);
+    const readline= argv.at(-2);
     if(!chats||chats.length === 0||(chats.length === 1&& chats[0].length === 0)){
         console.log('Chat not found');
         return [[],argv];
