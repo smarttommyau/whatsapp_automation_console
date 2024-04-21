@@ -103,6 +103,36 @@ function printMessageBody(message){
     console.log(message.body);
 }
 
+async function getContactbyNumber(number,client){
+    const id = await client.getNumberId(number);
+    if(!id) return undefined;
+    let contact = await client.getContactById(id);
+    return contact;
+}
+
+async function getContactbyName(name,client){
+    const contacts = await client.getContacts();
+    let contact = contacts.find(contact => contact.name == name);
+    if(contact.length === 0){
+        return undefined;
+    }
+    return contact;
+}
+
+async function sendMessageWithMention(client,chat,message){//support for mention
+    //catch the mention from the message from @ to space or end of string
+    let mention = message.match(/@[^ ]*/g);
+    if(mention === null){
+        await chat.sendMessage(message);
+        return;
+    }
+    mention = mention.map(mention => mention.slice(1));
+    mention = Promise.all(mention.map(mention => getContactByName(mention,client)|| getContactByNumber(mention,client)));
+    mention = mention.filter(mention => mention != undefined);
+    await chat.sendMessage(message,{mentions: mention});
+    return;
+}
+
 exports.processInput = processInput;
 exports.getChatsbyName = getChatsbyName;
 exports.getChatsbyNames = getChatsbyNames;
@@ -111,3 +141,4 @@ exports.getChatsbyPartialNames = getChatsbyPartialNames;
 exports.getUnreadChat = getUnreadChat;
 exports.printMessage = printMessage;
 exports.getUnreadMessages = getUnreadMessages;
+exports.sendMessageWithMention = sendMessageWithMention;

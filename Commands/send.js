@@ -24,30 +24,48 @@ async function Csend_ChatName(client,argv){
 }
 
 async function Csend_Message(client,argv){
-    let chat = await util.getChatsbyPartialName(argv[0],client);
-    let readline = argv.at(-2);
-    if(chat.length === 0 || chat == undefined){
+    let chats = await util.getChatsbyPartialNames(argv[0].split(","),client);
+    if(!chats||chats.length === 0||(chats.length === 1&& chats[0].length === 0)){
         console.log('Chat not found');
         return [[],argv];
-    }else if(chat.length > 1){
-        console.log('Multiple chats found:');
-        chat.forEach((chat,i) => {
-            console.log("%d: %s",i,chat.name);
-        });
-        readline.question('Select chat by number:', (input) => {
-            let selectedChat = chat[Number.parseInt(input)];
-            if (!selectedChat) {
-                console.log('Invalid chat number');
-                return [[],argv];
-            }
-            chat = selectedChat;
-        });
-    }else if(chat.length == 1){
-        chat = chat[0];
     }
-    console.log(chat.name)
+    chats.forEach( (chat,i) => {
+        if(chat.length > 1){
+            console.log(chats_str[i]);
+            console.log('Multiple chats found:');
+            chat.forEach((chat,i) => {
+                console.log("%d: %s",i,chat.name);
+            });
+            readline.question('Select chat by number:', (input) => {
+                let selectedChat = chat[Number.parseInt(input)];
+                if (!selectedChat) {
+                    console.log('Invalid chat number');
+                    return [[],argv];
+                }
+                chats[i] = selectedChat;
+            });
+        }else if(chat.length == 1){
+            chats[i] = chat[0];
+        }
+    });
+    console.log("To:");
+    chats.forEach(chat => {
+        console.log(chat.name);
+    });
     let message = argv[1];
-    await chat.sendMessage(message);
+    console.log(message);
+    //confirmation
+    readline.question('Send message? (y/n)', async (input) => {
+        if(input == 'y'){
+            chats.forEach(async chat => {
+                await util.sendMessageWithMention(client,chat,message);
+            })
+            
+            console.log('Message sent');
+        }else{
+            console.log('Message not sent');
+        }
+    });
     return [[],argv];
 }
 
