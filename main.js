@@ -1,7 +1,17 @@
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
-const processCommand = require('./command_process');
-const readline = require('readline');
+import webwhats from 'whatsapp-web.js';
+const { Client, LocalAuth } = webwhats;
+import qrcode from 'qrcode-terminal';
+import { processCommand } from './command_process.js';
+import readline from 'readline';
+import { sendCommand } from './Commands/send.js';
+import { retrieveCommand } from './Commands/retrieve.js';
+import { chatsCommand } from './Commands/chats.js';
+import { scheduleCommand } from './Commands/schedule.js';
+import { tasksCommand } from './Commands/tasks.js';
+import { timeCommand } from './Commands/time.js';
+import { exitCommand } from './Commands/exit.js';
+import { task_manager } from './task_manager.js';
+import { processInput } from './Utils.js';
 const wwebVersion = '2.2412.54';
 const client = new Client({
     puppeteer: {
@@ -15,8 +25,7 @@ const client = new Client({
         remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,
     },
 });
-const task_manager = require('./task_manager');
-const taskManager = new task_manager.task_manager(client);
+const taskManager = new task_manager(client);
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -31,16 +40,16 @@ const commandpros = async () =>{
     return new Promise((resolve,reject) => {
     rl.question('>', async (input) => {
         listOfCommands = [
-            require('./Commands/send').sendCommand(),
-            require('./Commands/retrieve').retrieveCommand(),
-            require('./Commands/chats').chatsCommand(),
-            require('./Commands/schedule').scheduleCommand(),
-            require('./Commands/tasks').tasksCommand(),
-            require('./Commands/time').timeCommand(),
-            require('./Commands/exit').exitCommand()
+            sendCommand(),
+            retrieveCommand(),
+            chatsCommand(),
+            scheduleCommand(),
+            tasksCommand(),
+            timeCommand(),
+            exitCommand()
         ];
     
-        await processCommand.processCommand(require('./Utils').processInput(input),client,rl,taskManager,listOfCommands);
+        await processCommand(processInput(input),client,rl,taskManager,listOfCommands);
         resolve();
         await commandpros();
     });

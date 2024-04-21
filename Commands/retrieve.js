@@ -1,27 +1,27 @@
-const command_process = require('../command_process');
-const utils = require('../Utils');
+import { command } from '../command_process.js';
+import {getUnreadMessages, printMessage, getChatsbyPartialName} from '../Utils.js';
 
-function retrieveCommand(){
+export function retrieveCommand(){
     const key = ['retrieve','ret'];
     const description = '<ChatName?>  Retrieve latest messages from chat or all unread';
     const runnable = true;
     const func = Cretrieve;
-    return new command_process.command(key,func,description,"",false,"",runnable);
+    return new command(key,func,description,"",false,"",runnable);
 }
 
 async function Cretrieve(client,argv){
     if(argv[0] === true){//print all unread messages
-        unreadMessages = await utils.getUnreadMessages(await client.getChats());
+        unreadMessages = await getUnreadMessages(await client.getChats());
         if(unreadMessages.length === 0){
             console.log('No unread messages');
             return [[],argv];
         }
         for(let message of unreadMessages){
-            await utils.printMessage(message,client);
+            await printMessage(message,client);
         }
         return [[],argv];
     }else if(argv[0]){
-        let chat = await utils.getChatsbyPartialName(argv[0].join(' '),client);
+        let chat = await getChatsbyPartialName(argv[0].join(' '),client);
         const readline = argv.at(-2);
         if(chat.length === 0 || chat == undefined){
             console.log('Chat not found');
@@ -53,13 +53,13 @@ async function Cretrieve(client,argv){
         console.log('-'.repeat(process.stdout.columns - 2));
         let promises = [];
         for(let message of messages){
-            promises.push(utils.printMessage(message,client));
+            promises.push(printMessage(message,client));
         }
         await Promise.all(promises);
         return [[],argv];
     }else{
         return [[
-            new command_process.command([],
+            new command([],
                 Cretrieve,"","",
                 true,
                 "retrieve <ChatName?>  Retrieve latest messages from chat or all unread",
@@ -71,4 +71,4 @@ async function Cretrieve(client,argv){
     }
 }
 
-exports.retrieveCommand = retrieveCommand;
+

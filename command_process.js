@@ -1,7 +1,6 @@
-const utils = require('./Utils');
-//const task_manager = require('./task_manager');
+import * as utils from './Utils.js';
 
-class command{
+export class command{
     constructor(key=[],func,description="",prompt=">",isarg=false,parent="",runnable=false,readline=false,mutli=false,tsm=false){
         this.key = key;//can be multiple values
         this.func = func; 
@@ -24,7 +23,7 @@ class command{
 //-4 arg inputstack[0](exists on request)
 
 // There should only be one command that accept wildcard arguments
-async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
+export async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
     if(inputstack.length&&inputstack.at(-1) === '///'){
         return;
     }
@@ -112,6 +111,3 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
         return;
     }
 }
-
-exports.processCommand = processCommand;
-exports.command = command;

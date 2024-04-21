@@ -1,13 +1,12 @@
-const command_process = require('../command_process');
+import { command } from '../command_process.js';
 
-function exitCommand(){
+export function exitCommand(){
     const key = ['exit','ex'];
     const description = 'Exit the program';
     const runnable = true;
     const func = (client,argv) => {
         process.exit(0);
     };
-    return new command_process.command(key,func,description,false,"",runnable);
+    return new command(key,func,description,false,"",runnable);
 }
 
-exports.exitCommand = exitCommand;

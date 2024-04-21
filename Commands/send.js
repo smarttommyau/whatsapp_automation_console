@@ -1,30 +1,29 @@
+import { getChatsbyPartialNames , sendMessageWithMention } from '../Utils.js';
+import { command } from '../command_process.js';
 
-const utils = require('../Utils');
-const command_process = require('../command_process');
-
-function sendCommand(){
+export function sendCommand(){
     const key = ['send','s'];
     const description = '<ChatName> <Message|  Send a message to a chat';
     const prompt = 'ChatName:';
     const func = Csend;
-    return new command_process.command(key,func,description,prompt);
+    return new command(key,func,description,prompt);
 }
 
 async function Csend(client,argv){
     const func = Csend_ChatName;
     const prompt = 'ChatName:';
-    return [[new command_process.command([],func,'',prompt,true,'send <ChatName> <Message|  Send a message to a chat')],argv];
+    return [[new command([],func,'',prompt,true,'send <ChatName> <Message|  Send a message to a chat')],argv];
 }
 
 
 async function Csend_ChatName(client,argv){
     const prompt='Message:';
     const func = Csend_Message;
-    return [[new command_process.command([],func,'',prompt,true,'send <ChatName> <Message|  Send a message to a chat',true,true,true)],argv];
+    return [[new command([],func,'',prompt,true,'send <ChatName> <Message|  Send a message to a chat',true,true,true)],argv];
 }
 
 async function Csend_Message(client,argv){
-    let chats = await utils.getChatsbyPartialNames(argv[0].split(","),client);
+    let chats = await getChatsbyPartialNames(argv[0].split(","),client);
     const readline= argv.at(-2);
     if(!chats||chats.length === 0||(chats.length === 1&& chats[0].length === 0)){
         console.log('Chat not found');
@@ -69,7 +68,7 @@ async function Csend_Message(client,argv){
             readline.question('Send message? (y/n)', (input) => {
                 if(input == 'y'){
                     chats.forEach(async chat => {
-                        await utils.sendMessageWithMention(client,chat,message);
+                        await sendMessageWithMention(client,chat,message);
                     })
                     
                     console.log('Message sent');
@@ -84,4 +83,4 @@ async function Csend_Message(client,argv){
     return [[],argv];
 }
 
-exports.sendCommand = sendCommand;
+

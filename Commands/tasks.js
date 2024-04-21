@@ -1,15 +1,14 @@
-const command_process = require('../command_process');
-const utils = require('../Utils');
+import { command } from '../command_process.js';
 
-function tasksCommand(){
+export function tasksCommand(){
     const key = ['tasks','tsk','ts'];
     const description = 'Manage tasks';
     const func = Ctasks;
-    return new command_process.command(key,func,description);
+    return new command(key,func,description);
 }
 function Ctasks(client,argv){
     const parent = 'tasks';
-    const list = new command_process.command(
+    const list = new command(
         ['ls','list'],
         Ctasks_list,
         'List all tasks',
@@ -21,7 +20,7 @@ function Ctasks(client,argv){
         false,
         true//tsm
     );
-    const pause = new command_process.command(
+    const pause = new command(
         ['pause','p'],
         Ctasks_pause,
         '<id>... Pause task(s)',
@@ -33,7 +32,7 @@ function Ctasks(client,argv){
         false,
         true//tsm
     );
-    const resume = new command_process.command(
+    const resume = new command(
         ['resume','r'],
         Ctasks_resume,
         '<id>... Resume task(s)',
@@ -45,7 +44,7 @@ function Ctasks(client,argv){
         false,
         true//tsm
     );
-    const remove = new command_process.command(
+    const remove = new command(
         ['remove','rm'],
         Ctasks_remove,
         '<id>... Remove task(s)',
@@ -57,7 +56,7 @@ function Ctasks(client,argv){
         false,
         true//tsm
     );
-    const clean = new command_process.command(
+    const clean = new command(
         ['clean','cln'],
         Ctasks_clean,
         '<exclude ids> Remove completed tasks',
@@ -90,7 +89,7 @@ async function Ctasks_pause(client,argv){
     }
     if(!argv.at(-1)){//runnable?
         return [[
-            new command_process.command(
+            new command(
                 [],
                 Ctasks_pause,
                 '<id>... Pause task(s)',
@@ -123,7 +122,7 @@ async function Ctasks_resume(client,argv){
     }
     if(!argv.at(-1)){//runnable?
         return [[
-            new command_process.command(
+            new command(
                 [],
                 Ctasks_resume,
                 '<id>... Resume task(s)',
@@ -156,7 +155,7 @@ async function Ctasks_remove(client,argv){
     }
     if(!argv.at(-1)){//runnable?
         return [[
-            new command_process.command(
+            new command(
                 [],
                 Ctasks_remove,
                 '<id>... Remove task(s)',
@@ -189,7 +188,7 @@ async function Ctasks_clean(client,argv){
     }
     if(!argv.at(-1)){//runnable?
         return [[
-            new command_process.command(
+            new command(
                 [],
                 Ctasks_clean,
                 '<exclude ids> Remove completed tasks',
@@ -215,4 +214,4 @@ async function Ctasks_clean(client,argv){
     return [[],argv];
 }
 
-exports.tasksCommand = tasksCommand;
+

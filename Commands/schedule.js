@@ -1,20 +1,20 @@
-const utils = require('../Utils');
-const chrono = require('chrono-node');
-const command_process = require('../command_process');
+import { getChatsbyPartialNames }  from '../Utils.js';
+import * as chrono from 'chrono-node';
+import { command } from '../command_process.js';
 
-function scheduleCommand(){
+export function scheduleCommand(){
     const key = ['schedule','sch'];
     const description = '<Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
     const func = Cschedule;
     const prompt = ""
-    return new command_process.command(key,func,description,prompt,false);
+    return new command(key,func,description,prompt,false);
 }
 
 async function Cschedule(client,argv){
     const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
     const prompt = "Type(once|repeat):";
     const func = Cschedule_Type;
-    return [[new command_process.command([],func,"",prompt,true,parent)],argv];
+    return [[new command([],func,"",prompt,true,parent)],argv];
 
 }
 
@@ -36,7 +36,7 @@ async function Cschedule_Type(client,argv){
     const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
     const prompt = "DateTimeDescription(Please quotes it):";
     const func = Cschedule_Type_DateTimeDescription;
-    return [[new command_process.command([],func,"",prompt,true,parent)],argv];
+    return [[new command([],func,"",prompt,true,parent)],argv];
 }
 
 async function Cschedule_Type_DateTimeDescription(client,argv){
@@ -59,13 +59,13 @@ async function Cschedule_Type_DateTimeDescription(client,argv){
     const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
     const prompt = "Chats(join with ,):";
     const func = Cschedule_Type_DateTimeDescription_Chats;
-    return [[new command_process.command([],func,"",prompt,true,parent,false,true)],argv];
+    return [[new command([],func,"",prompt,true,parent,false,true)],argv];
 }
 
 async function Cschedule_Type_DateTimeDescription_Chats(client,argv){
     let chats_str = argv.at(-3).split(',');
     const readline = argv.at(-2);
-    let chats = await utils.getChatsbyPartialNames(chats_str,client);
+    let chats = await getChatsbyPartialNames(chats_str,client);
     if(!chats||chats.length === 0||(chats.length === 1&& chats[0].length === 0)){
         console.log('Chat not found');
         return [[],argv];
@@ -103,7 +103,7 @@ async function Cschedule_Type_DateTimeDescription_Chats(client,argv){
     const parent = 'schedule <Type> <DateTimeDescription> <end> <Chats(seperate ",")> <Message> Schedule a message';
     const prompt = "Message:";
     const func = Cschedule_Type_DateTimeDescription_Chats_Message;
-    return [[new command_process.command([],func,"",prompt,true,parent,true,true,true,true)],argv];
+    return [[new command([],func,"",prompt,true,parent,true,true,true,true)],argv];
 }
 
 async function Cschedule_Type_DateTimeDescription_Chats_Message(client,argv){
@@ -143,4 +143,4 @@ async function Cschedule_Type_DateTimeDescription_Chats_Message(client,argv){
     return [[],argv];
 }
 
-exports.scheduleCommand = scheduleCommand;
+

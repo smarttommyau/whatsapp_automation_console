@@ -1,2 +1,1 @@
-const command_process = require('./command_process');
-
+import { command } from './command_process';

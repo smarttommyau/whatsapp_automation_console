@@ -1,4 +1,5 @@
-function processInput(input){
+import terminalImage from 'terminal-image';
+export function processInput(input){
     //split by space but ignore spaces between quotes, and remove the quoting quotes
     if(!input){
         return [];
@@ -10,7 +11,7 @@ function processInput(input){
 }
 
 
-async function getChatsbyName(name,client,caseSensitive = false){
+export async function getChatsbyName(name,client,caseSensitive = false){
     const chats = await client.getChats();
     if(!caseSensitive){
         name = name.toLowerCase();
@@ -21,7 +22,7 @@ async function getChatsbyName(name,client,caseSensitive = false){
     return chat;
 }
 
-async function getChatsbyNames(names,client,caseSensitive = false){
+export async function getChatsbyNames(names,client,caseSensitive = false){
     const chats = await client.getChats();
     if(!caseSensitive){
         names = names.map(name => name.toLowerCase());
@@ -32,7 +33,7 @@ async function getChatsbyNames(names,client,caseSensitive = false){
     return chat;
 }
 
-async function getChatsbyPartialName(name,client,caseSensitive = false){
+export async function getChatsbyPartialName(name,client,caseSensitive = false){
     const chats = await client.getChats();
     if(!caseSensitive){
         name = name.toLowerCase();
@@ -41,7 +42,7 @@ async function getChatsbyPartialName(name,client,caseSensitive = false){
     return chats.filter(chat => chat.name.includes(name));
 }
 
-async function getChatsbyPartialNames(names,client,caseSensitive = false){
+export async function getChatsbyPartialNames(names,client,caseSensitive = false){
     const chats = await client.getChats();
     let ArrayofChat = [];
     if(!caseSensitive){
@@ -57,13 +58,13 @@ async function getChatsbyPartialNames(names,client,caseSensitive = false){
     return ArrayofChat;    
 }
 
-async function getUnreadChat(client){
+export async function getUnreadChat(client){
     let chats = await client.getChats();
     return chats.filter(chat => chat.unreadCount > 0);
 }
 
 
-async function getUnreadMessages(chats){
+export async function getUnreadMessages(chats){
     let unreadMessages = [];
     for(const chat of chats){
         if(chat.unreadCount === 0){
@@ -75,7 +76,7 @@ async function getUnreadMessages(chats){
 
 }
 
-async function printMessage(message,client=undefined){
+export async function printMessage(message,client=undefined){
     // console.log("-".repeat(process.stdout.columns - 2))
     let 
     from ="From:";
@@ -91,20 +92,22 @@ async function printMessage(message,client=undefined){
     }
     console.log(from);
     console.log("Date:" + new Date(message.timestamp*1000).toLocaleString());
-    printMessageBody(message);
+    await printMessageBody(message);
     console.log("-".repeat(process.stdout.columns - 2));
 }
 
-function printMessageBody(message){
+export async function printMessageBody(message){
     if(message.hasMedia){
         console.log('>Media message<');
-        //TODO: Download and show the media in console
+        const media = message.downloadMedia();
+        const image = await terminal_image.buffer(media)
+        console.log(image);
     }
     console.log(message.body);
 }
 
 
-async function getNumberbyName(name,client){
+export async function getNumberbyName(name,client){
     const contacts = await client.getContacts();
     let contact = contacts.find(contact => contact.name == name);
     if(contact.length === 0){
@@ -113,7 +116,7 @@ async function getNumberbyName(name,client){
     return contact.number;
 }
 
-async function sendMessageWithMention(client,chat,message){//support for mention
+export async function sendMessageWithMention(client,chat,message){//support for mention
     //catch the mention from the message from @ to space or end of string
     let mention = message.match(/@[^ ]*/g);
     if(mention === null){
@@ -140,12 +143,12 @@ async function sendMessageWithMention(client,chat,message){//support for mention
     return;
 }
 
-exports.processInput = processInput;
-exports.getChatsbyName = getChatsbyName;
-exports.getChatsbyNames = getChatsbyNames;
-exports.getChatsbyPartialName = getChatsbyPartialName;
-exports.getChatsbyPartialNames = getChatsbyPartialNames;
-exports.getUnreadChat = getUnreadChat;
-exports.printMessage = printMessage;
-exports.getUnreadMessages = getUnreadMessages;
-exports.sendMessageWithMention = sendMessageWithMention;
+
+
+
+
+
+
+
+
+
