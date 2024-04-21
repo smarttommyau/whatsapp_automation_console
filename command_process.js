@@ -110,26 +110,5 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommands,pro
     }
 }
 
-
-// async function processCommand(client) {
-//     var myTaskManager = new task_manager.task_manager();
-//             let commands = input.trim().split(' ');
-//             switch(commands[0]){
-
-//                 case 'time':
-//                 case 'tm':
-//                     console.log(new Date().toLocaleString());
-//                     break;
-//                 case 'exit':
-//                 case 'ex':
-//                     client.destroy();
-//                     process.exit(0);
-//                     break;
-//                 default:
-//                     console.log('Unknown command. Type help to get list of commands');
-//                     break;
-//             }
-// }
-
 exports.processCommand = processCommand;
 exports.command = command;

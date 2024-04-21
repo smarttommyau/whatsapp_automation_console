@@ -36,6 +36,7 @@ const commandpros = async () =>{
             require('./Commands/chats').chatsCommand(),
             require('./Commands/schedule').scheduleCommand(),
             require('./Commands/tasks').tasksCommand(),
+            require('./Commands/time').timeCommand(),
             require('./Commands/exit').exitCommand()
         ];
     
