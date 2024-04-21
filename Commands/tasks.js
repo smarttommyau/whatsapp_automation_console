@@ -1,5 +1,5 @@
-const command_process = require('./command_process');
-const util = require('./Utils');
+const command_process = require('../command_process');
+const util = require('../Utils');
 
 function tasksCommand(){
     const key = ['tasks','tsk','ts'];
@@ -218,3 +218,5 @@ async function Ctasks_clean(client,argv){
 
     return [[],argv];
 }
+
+exports.tasksCommand = tasksCommand;

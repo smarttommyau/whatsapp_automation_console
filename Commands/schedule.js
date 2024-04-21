@@ -137,6 +137,4 @@ async function Cschedule_Type_DateTimeDescription_Chats_Message(client,argv){
     return [[],argv];
 }
 
-
-
 exports.scheduleCommand = scheduleCommand;

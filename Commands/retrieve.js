@@ -1,5 +1,6 @@
 const command_process = require('../command_process');
 const util = require('../Utils');
+
 function retrieveCommand(){
     const key = ['retrieve','ret'];
     const description = '<ChatName?>  Retrieve latest messages from chat or all unread';

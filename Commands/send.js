@@ -1,5 +1,7 @@
+
 const util = require('../Utils');
 const command_process = require('../command_process');
+
 function sendCommand(){
     const key = ['send','s'];
     const description = '<ChatName> <Message|  Send a message to a chat';

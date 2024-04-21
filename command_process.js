@@ -24,9 +24,9 @@ class command{
 //-4 arg inputstack[0](exists on request)
 
 // There should only be one command that accept wildcard arguments
-async function processCommand(inputstack,client, readline,tsm,listOfCommasnds,prompt=">",argv=Array()){
+async function processCommand(inputstack,client, readline,tsm,listOfCommands,prompt=">",argv=Array()){
     // console.log(inputstack);
-    if(inputstack.length === 0){
+    if(inputstack.length === 0&&listOfCommands.find(command => command.isarg&&!command.key.length)){
         // console.log('None:');
         // console.log(inputstack);
         const question1 = () =>{    
@@ -73,24 +73,24 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommasnds,pr
         }
         argv.push(true);//tell the func to run
         await command.func(client,argv);
-        if(command.readline){
+            if(command.readline){
+                argv.pop();
+            }
+            if(command.istsm){
+                argv.pop();
+            }
             argv.pop();
-        }
-        if(command.istsm){
-            argv.pop();
-        }
-        argv.pop();
-        return;
-    }else{
-        if(command.istsm){
-            argv.push(tsm);
-        }
-        if(command.readline){
-            argv.push(readline);
-        }
-        argv.push(false);//tell it that there is still more to come 
-        [listOfCommands,argv] = await command.func(client,argv);
-        if(command.readline){
+            return;
+        }else{
+            if(command.istsm){
+                argv.push(tsm);
+            }
+            if(command.readline){
+                argv.push(readline);
+            }
+            argv.push(false);//tell it that there is still more to come 
+            [listOfCommands,argv] = await command.func(client,argv);
+            if(command.readline){
             argv.pop();
         }
         if(command.istsm){
@@ -98,7 +98,10 @@ async function processCommand(inputstack,client, readline,tsm,listOfCommasnds,pr
         }
         argv.pop();
         if(listOfCommands.length > 0){
-            await processCommand(inputstack.slice(1),client,readline,tsm,listOfCommands,listOfCommands.find(command => command.isarg&&!command.key.length).prompt,argv);
+            await processCommand(inputstack.slice(1),client,readline,tsm,listOfCommands,
+                (listOfCommands.find(command => command.isarg&&!command.key.length)||listOfCommands[0]).prompt
+                ,argv
+            );
         }else if(inputstack.length > 1){
             console.log('Invalid arguments')
         }
