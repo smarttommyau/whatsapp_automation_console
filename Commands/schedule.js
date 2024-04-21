@@ -76,7 +76,7 @@ async function Cschedule_Type_DateTimeDescription_Chats(client,argv){
         console.log('Chat not found');
         return [[],argv];
     }
-    chats.forEach(async (chat,i) => {
+    chats.forEach( (chat,i) => {
         if(chat.length > 1){
             console.log(chats_str[i]);
             console.log('Multiple chats found:');

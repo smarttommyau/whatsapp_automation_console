@@ -16,9 +16,9 @@ async function Cretrieve(client,argv){
             console.log('No unread messages');
             return [[],argv];
         }
-        unreadMessages.forEach(async (message) => {
+        for(let message of unreadMessages){
             await util.printMessage(message,client);
-        });
+        }
         return [[],argv];
     }else if(argv[0]){
         let chat = await util.getChatsbyPartialName(argv[0].join(' '),client);
@@ -51,9 +51,9 @@ async function Cretrieve(client,argv){
         }
         let messages = await chat.fetchMessages({limit: 10});
         console.log('-'.repeat(process.stdout.columns - 2));
-        messages.forEach(async(message) => {
+        for(let message of messages){
             await util.printMessage(message,client);
-        });
+        }
         return [[],argv];
     }else{
         return [[
