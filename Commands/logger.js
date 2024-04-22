@@ -6,7 +6,8 @@ import pkg from 'mime-types';
 const mime = pkg;
 export class logger {
     constructor(){
-        this.emitter = null;
+        this.state = false;
+        this.listenfunc = this.client_logger;
     }
     loggerCommand(){
         const key = ['logger','l'];
@@ -33,20 +34,21 @@ export class logger {
                 argv
             ]
     }else{
-        console.log("Logger Status: " + (this.emitter?"Enabled":"Disabled"));
+        console.log("Logger Status: " + (this.state?"Enabled":"Disabled"));
         return [[],argv];
     }
     }
     async Clogger_disable(client,argv){
-        if(this.emitter){
-            this.emitter.off('message_create',this.client_logger.bind(this));
-            this.emitter = null;
+        if(this.state){
+            client.off('message_create',this.listenfunc);
+            this.state = false;
         }
         return [[],argv];
     }
     async Clogger_enable(client,argv){
-        if(!this.emitter){
-            this.emitter = client.on('message_create', this.client_logger.bind(this));
+        if(!this.state){
+            client.on('message_create', this.listenfunc);
+            this.state = true;
         }
         return [[],argv];
     }
