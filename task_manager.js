@@ -1,5 +1,5 @@
 import * as chrono from 'chrono-node';
-import { sendMessageWithMention } from './Utils.js';
+import { sendMessageWithContent } from './Message_process.js';
 export class task_manager {
     constructor(client){
         this.tasks = [];
@@ -104,7 +104,7 @@ class tasks {
     async scheduleTasks(){
         this.chats.forEach(async (chat) => {
             // await chat.sendMessage(this.message);
-            await sendMessageWithMention(this.client,chat,this.message);
+            await sendMessageWithContent(this.client,chat,this.message);
         });
         this.interval.date = chrono.parseDate(this.interval.description);
         if(this.repeat){

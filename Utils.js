@@ -128,49 +128,6 @@ export async function getNumberbyName(name,client){
     return contact.number;
 }
 
-export async function sendMessageWithMention(client,chat,message){//support for mention
-    //TODO: allow send message with media
-    let mention = message.match(/@[^ ]*/g);
-    if(mention === null){
-        await chat.sendMessage(message);
-        return;
-    }
-    mention = mention.map(mention => mention.slice(1).trim());
-    for(const i in mention){
-        const n = mention[i];
-        if(n.match(/^[0-9]+$/)){
-            mention[i] = n + '@c.us';
-        }else if(chat.isGroup&&n == "everyone"){
-            let text = ""
-            mention = [];
-            for(participant of chat.participants){
-                mention.push(`${participant.id.usre}@c.us`);
-                text += `@${participant.id.user} `;
-            }
-            message = message.replace('@everyone',text);
-            break;
-        }else{
-            const number = await getNumberbyName(n,client)
-            if(!number){
-                mention[i] = undefined;
-                continue;
-            }
-            //repace the name with the number
-            message = message.replace('@' + n,'@' + number);
-            mention[i] = number + '@c.us';
-        }
-    }
-    mention = mention.filter(mention => mention !== undefined);
-    if(!mention.length){
-        await chat.sendMessage(message);
-        return;
-    }
-    await chat.sendMessage(message,{mentions: mention});
-    return;
-}
-
-
-
 
 
 

@@ -1,4 +1,5 @@
-import { getChatsbyPartialNames , sendMessageWithMention } from '../Utils.js';
+import { getChatsbyPartialNames } from '../Utils.js';
+import { sendMessageWithContent } from '../Message_process.js';
 import { command } from '../command_process.js';
 
 export function sendCommand(){
@@ -68,7 +69,7 @@ async function Csend_Message(client,argv){
             readline.question('Send message? (y/n)', (input) => {
                 if(input == 'y'){
                     chats.forEach(async chat => {
-                        await sendMessageWithMention(client,chat,message);
+                        await sendMessageWithContent(client,chat,message);
                     })
                     
                     console.log('Message sent');
