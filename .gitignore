@@ -1,6 +1,7 @@
 .data
 media
 sticker
+logs
 node_modules
 .vscode
 .VSCodeCounter

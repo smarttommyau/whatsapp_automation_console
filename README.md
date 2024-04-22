@@ -4,6 +4,7 @@
 # Functions
 - Schedule message base on time (both recuring or one time)
 - checking and sending messages
+- Logging Message history
 - More
 
 ## Related

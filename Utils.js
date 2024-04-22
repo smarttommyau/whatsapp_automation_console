@@ -118,6 +118,10 @@ async function printMessageBody(message){
     return buffer;
 }
 
+export function printLocation(location){
+    return `${location.address}: ${location.description}\n${location.latitude},${location.longitude}`;
+}
+
 
 export async function getNumberbyName(name,client){
     const contacts = await client.getContacts();

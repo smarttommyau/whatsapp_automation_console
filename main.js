@@ -10,6 +10,7 @@ import { scheduleCommand } from './Commands/schedule.js';
 import { tasksCommand } from './Commands/tasks.js';
 import { timeCommand } from './Commands/time.js';
 import { exitCommand } from './Commands/exit.js';
+import { logger } from './Commands/logger.js';
 import { task_manager } from './task_manager.js';
 import { processInput } from './Utils.js';
 const wwebVersion = '2.2412.54';
@@ -26,6 +27,7 @@ const client = new Client({
     },
 });
 const taskManager = new task_manager(client);
+const message_logger = new logger();
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -45,6 +47,7 @@ const commandpros = async () =>{
             chatsCommand(),
             scheduleCommand(),
             tasksCommand(),
+            message_logger.loggerCommand(),
             timeCommand(),
             exitCommand()
         ];
