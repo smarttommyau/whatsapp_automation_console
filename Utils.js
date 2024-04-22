@@ -121,33 +121,47 @@ async function printMessageBody(message){
 
 export async function getNumberbyName(name,client){
     const contacts = await client.getContacts();
-    let contact = contacts.find(contact => contact.name == name);
-    if(contact.length === 0){
+    let contact = contacts.find(contact => contact.name == name||contact.pushname == name);
+    if(!contact||contact.length === 0){
         return undefined;
     }
     return contact.number;
 }
 
 export async function sendMessageWithMention(client,chat,message){//support for mention
-    //catch the mention from the message from @ to space or end of string
+    //TODO: allow send message with media
     let mention = message.match(/@[^ ]*/g);
     if(mention === null){
         await chat.sendMessage(message);
         return;
     }
-    mention = mention.map(mention => mention.slice(1));
+    mention = mention.map(mention => mention.slice(1).trim());
     for(const i in mention){
-        if(!Number.isNaN(mention[i])&&Number.isFinite(mention[i])){
-            mention[i] = mention[i] + '@c.us';
+        const n = mention[i];
+        if(n.match(/^[0-9]+$/)){
+            mention[i] = n + '@c.us';
+        }else if(chat.isGroup&&n == "everyone"){
+            let text = ""
+            mention = [];
+            for(participant of chat.participants){
+                mention.push(`${participant.id.usre}@c.us`);
+                text += `@${participant.id.user} `;
+            }
+            message = message.replace('@everyone',text);
+            break;
         }else{
-            const number = await getNumberbyName(mention[i],client)
+            const number = await getNumberbyName(n,client)
+            if(!number){
+                mention[i] = undefined;
+                continue;
+            }
             //repace the name with the number
-            message = message.replace('@' + mention[i],'@' + number);
+            message = message.replace('@' + n,'@' + number);
             mention[i] = number + '@c.us';
         }
     }
-    mention = mention.filter(mention => mention != undefined);
-    if(mention.length === 0){
+    mention = mention.filter(mention => mention !== undefined);
+    if(!mention.length){
         await chat.sendMessage(message);
         return;
     }
