@@ -79,14 +79,16 @@ function processContent(message){
             }
             if(path.endsWith('.json')){
                 const sticker = JSON.parse(fs.readFileSync(path));
-                author = sticker["author"];
-                name = sticker["name"];
+                author = sticker["author"]||"smarttommyau";
+                name = sticker["name"]||"Whatsapp Automation";
                 path = sticker["path"].replace("<cwd>",process.cwd());//require full path
             }else{
-                author = content["author"];
-                name = content["name"];
+                author = content["author"]||"smarttommyau";
+                name = content["name"]||"Whatsapp Automation";
             }
-            
+            if(!fs.existsSync(path)){
+                return undefined;
+            }
             output = MessageMedia.fromFilePath(path);
             options.stickerAuthor = author;
             options.stickerName = name;
