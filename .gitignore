@@ -1,5 +1,6 @@
 .data
 media
+sticker
 node_modules
 .vscode
 .VSCodeCounter

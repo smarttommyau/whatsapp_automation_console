@@ -1,5 +1,5 @@
 import { getChatsbyPartialNames } from '../Utils.js';
-import { sendMessageWithContent } from '../Message_process.js';
+import { sendMessageWithContent, processMessage, previewMessage } from '../Message_process.js';
 import { command } from '../command_process.js';
 
 export function sendCommand(){
@@ -61,9 +61,10 @@ async function Csend_Message(client,argv){
         console.log(chat.name);
     });
     let message = argv[1].join(' ');
-    console.log("Message:")
-    console.log(message);
-    //confirmation
+    console.log("Message(Preview not accurate):");
+    let content = await processMessage(client,chats[0],message);
+    await previewMessage(content[0],content[1])
+        //confirmation
     const q2 = () => {
         return new Promise((resolve,reject) => {
             readline.question('Send message? (y/n)', (input) => {
