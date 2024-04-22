@@ -79,7 +79,12 @@ export class logger {
             const media = await msg.downloadMedia();
             buffer += ">Media message<" + "\n";
             //save media
-            const filename = media.filename + "_" +from+ "_" +msg.id+"."+mime.extention(msg.mimetype);
+            let filename = "";
+            if(media.filename){
+                filename = msg.id.id + "_" + media.filename;
+            }else{
+                filename = msg.id.id + "." + mime.extension(media.mimetype);
+            }
             fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
             buffer += "Saved as: " + filename + "\n";
         }else{
