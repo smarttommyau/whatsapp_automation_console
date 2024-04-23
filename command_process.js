@@ -48,14 +48,6 @@ export async function processCommand(inputstack,client, readline,tsm,listOfComma
     if(!command){
         command = listOfCommands.find(command => command.isarg&&!command.key.length);
     }
-    if(command && command.isarg){
-        if(command.multi){
-            argv.push(inputstack);
-            inputstack = [];
-        }else{
-            argv.push(inputstack[0]);
-        }
-    }
     if(!command || inputstack[0] === '--help' || inputstack[0] === '-h'){
         console.log('Help Menu:');
         if(listOfCommands.length === 1 && listOfCommands[0].isarg){
@@ -67,7 +59,14 @@ export async function processCommand(inputstack,client, readline,tsm,listOfComma
         }
         return;
     }
-    
+    if(command && command.isarg){
+        if(command.multi){
+            argv.push(inputstack);
+            inputstack = [];
+        }else{
+            argv.push(inputstack[0]);
+        }
+    }
     if((inputstack.length === 1||command.multi) && command.runnable){
         if(command.istsm){
             argv.push(tsm);
