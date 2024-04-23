@@ -67,6 +67,9 @@ export class logger {
         }else{
             path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
         }
+        if(msg.isStatus){
+            path += "status/";
+        }
         if(!fs.existsSync(path)){
             fs.mkdirSync(path,{
                 recursive:true
