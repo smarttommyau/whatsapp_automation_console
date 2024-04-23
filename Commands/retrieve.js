@@ -17,7 +17,7 @@ async function Cretrieve(client,argv){
             return [[],argv];
         }
         let promises = [];
-        for(let message of messages){
+        for(let message of unreadMessages){
             promises.push(printMessage(message,client));
         }
         const buffer = await Promise.all(promises);
@@ -53,7 +53,7 @@ async function Cretrieve(client,argv){
         }else if(chat.length == 1){
             chat = chat[0];
         }
-        let messages = await chat.fetchMessages({limit: 10});
+        let messagemessage_typs = await chat.fetchMessages({limit: 10});
         let promises = [];
         for(let message of messages){
             promises.push(printMessage(message,client));
@@ -66,7 +66,7 @@ async function Cretrieve(client,argv){
     }else{
         return [[
             new command([],
-                Cretrieve,"",
+                Cretrieve,"","",
                 true,
                 "retrieve <ChatName?>  Retrieve latest messages from chat or all unread",
                 true,
