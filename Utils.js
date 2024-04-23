@@ -174,22 +174,28 @@ export async function generateMessageJson(msg,contact,chat,path){
         quotedjson['body'] = quotedMsg.body.substring(0,10);
         jsonout['Quoted'] = quotedjson;
     }
+    const mediaKey = msg.mediaKey.replaceAll('/','_').replaceAll('=','').replaceAll('+','_');
     if(isMedia){
-        const media = await msg.downloadMedia();
-        
+        //check if media is already downloaded
+        let media;
+        let filename = fs.readdirSync(path).find((file)=>file.includes(mediaKey));
+        if(!filename){
+            media = await msg.downloadMedia();
+        }
         //save media
-        let filename = "";
-        if(msg.type == MessageTypes.STICKER){
-           filename += "sticker_";
-        }
-        const mediaKey = msg.mediaKey.replaceAll('/','_').replaceAll('=','').replaceAll('+','_');
-        if(media.filename){
-            filename += (mediaKey||msg.id.id) + "_" + media.filename;
-        }else{
-            filename += (mediaKey||msg.id.id) + "." + mime.extension(media.mimetype);
-        }
-        if(!fs.existsSync(path + filename)){ //skip file write if already exists
-            fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
+        if(media){
+            filename = "";
+            if(msg.type == MessageTypes.STICKER){
+                filename += "sticker_";
+            }
+            if(media.filename){
+                filename += (mediaKey||msg.id.id) + "_" + media.filename;
+            }else{
+                filename += (mediaKey||msg.id.id) + "." + mime.extension(media.mimetype);
+            }
+            if(!fs.existsSync(path + filename)){ //skip file write if already exists
+                fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
+            }
         }
         jsonout['Media'] = {
             'filename':filename

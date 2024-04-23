@@ -79,10 +79,10 @@ export class logger {
             message = jsonin[msgIndex];
         }
         if(message){
-            //pop message
-            if(message['media']){
-                fs.unlinkSync(path + message['media']['filename']);
-            }
+            //Media is not deleted as it may be used in other messages
+            // if(message['media']){
+            //     fs.unlinkSync(path + message['media']['filename']);
+            // }
             jsonin.splice(msgIndex,1);
             fs.writeFileSync(path + "logs.json",JSON.stringify(jsonin));
         }
