@@ -53,7 +53,7 @@ async function Cretrieve(client,argv){
         }else if(chat.length == 1){
             chat = chat[0];
         }
-        let messagemessage_typs = await chat.fetchMessages({limit: 10});
+        let messages = await chat.fetchMessages({limit: 10});
         let promises = [];
         for(let message of messages){
             promises.push(printMessage(message,client));
