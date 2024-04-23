@@ -59,7 +59,7 @@ function Ctasks(client,argv){
     const clean = new command(
         ['clean','cln'],
         Ctasks_clean,
-        '<exclude ids> Remove completed tasks',
+        '<exclude id>... Remove completed tasks',
         '',
         false,
         parent,
