@@ -140,7 +140,9 @@ export class logger {
                 const missingid = idlist.filter((element) => {
                         return !tempidlist.includes(element);
                 });
-                message = missingid[0]
+                message = message.find((element) => {
+                    return element.id == missingid[0];
+                });
             }
         }else{
             message = message[0];
