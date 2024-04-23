@@ -3,6 +3,7 @@ import { processCommand } from './command_process.js';
 import terminalImage from 'terminal-image';
 import whtswebjs from 'whatsapp-web.js'; 
 import fs from 'node:fs';
+import sharp from 'sharp';
 const { MessageMedia } = whtswebjs;
 async function processMention(client,chat,message){
     let mention = message.match(/@[^ ]*/g);
@@ -69,7 +70,7 @@ function processContent(message){
             output = MessageMedia.fromFilePath(path);
             options.caption = message.replace(msg,"");
             break;
-        case "stick":
+        case "custom_stick":
             //process path
             path = content["stick"];
             let author;
@@ -77,23 +78,28 @@ function processContent(message){
             if(path.at(0) != '/'){
                 path = process.cwd() +'/sticker/' + content["stick"];
             }
-            if(path.endsWith('.json')){
-                const sticker = JSON.parse(fs.readFileSync(path));
-                author = sticker["author"]||"smarttommyau";
-                name = sticker["name"]||"Whatsapp Automation";
-                path = sticker["path"].replace("<cwd>",process.cwd());//require full path
-            }else{
-                author = content["author"]||"smarttommyau";
-                name = content["name"]||"Whatsapp Automation";
+            author = content["author"]||"smarttommyau";
+            name = content["name"]||"Whatsapp Automation";
+            if(!output){
+                if(!fs.existsSync(path)){
+                    return undefined;
+                }
+                output = MessageMedia.fromFilePath(path);
             }
-            if(!fs.existsSync(path)){
-                return undefined;
-            }
-            output = MessageMedia.fromFilePath(path);
             options.stickerAuthor = author;
             options.stickerName = name;
             options.sendMediaAsSticker = true;
             break;
+        case "stick":
+            //process path
+            path = content["stick"];
+            if(path.at(0) != '/'){
+                path = process.cwd() +'/stickers/' + content["stick"];
+            }
+            output = MessageMedia.fromFilePath(path);
+            options.sendMediaAsSticker = true;
+            break;
+
         // case "poll":
         // case "Poll":
 
