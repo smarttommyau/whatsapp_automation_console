@@ -2,8 +2,10 @@ import { command } from '../command_process.js';
 import { printLocation } from '../Utils.js';
 import fs from 'node:fs';
 import {Buffer} from 'node:buffer';
-import pkg from 'mime-types';
-const mime = pkg;
+import mimepkg from 'mime-types';
+const mime = mimepkg;
+import whtswebjspkg from 'whatsapp-web.js';
+const { MessageTypes } = whtswebjspkg;
 export class logger {
     constructor(){
         this.state = false;
@@ -53,11 +55,18 @@ export class logger {
         return [[],argv];
     }
     async client_logger(msg){
+        //TODO: support more types of messages
         let buffer = "<" + '-'.repeat(20) + ">\n";
         const contact = await msg.getContact();
         const chat    = await msg.getChat();
+        const isbroadcast = msg.broadcast;
         const chatName = chat.name;
-        const path = process.cwd() + "/logs/" + chatName + "/";
+        let path = ""
+        if(!isbroadcast){
+            path = process.cwd() + "/logs/" + chatName + "/";
+        }else{
+            path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
+        }
         if(!fs.existsSync(path)){
             fs.mkdirSync(path,{
                 recursive:true
@@ -65,7 +74,7 @@ export class logger {
         }
         const isMedia = msg.hasMedia; 
         buffer += "ID: " + msg.id.id + "\n";
-        const from = contact.name || contact.pushname +"@"+contact.number;
+        const from = (contact.name || contact.pushname) +"@"+contact.number;
         buffer += "From: " + from + "\n";
         buffer += "Time: " + new Date(msg.timestamp*1000).toLocaleString() + "\n";
         if(msg.hasQuotedMsg){
@@ -82,10 +91,13 @@ export class logger {
             buffer += ">Media message<" + "\n";
             //save media
             let filename = "";
+            if(msg.type == MessageTypes.STICKER){
+               filename += "sticker_";
+            }
             if(media.filename){
-                filename = msg.id.id + "_" + media.filename;
+                filename += msg.id.id + "_" + media.filename;
             }else{
-                filename = msg.id.id + "." + mime.extension(media.mimetype);
+                filename += msg.id.id + "." + mime.extension(media.mimetype);
             }
             fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
             buffer += "Saved as: " + filename + "\n";
