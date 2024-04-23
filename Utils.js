@@ -1,6 +1,7 @@
 import terminalImage from 'terminal-image';
 import { Buffer } from 'node:buffer';
 import sharp from 'sharp';
+import fs from 'node:fs';
 export function processInput(input){
     //split by space but ignore spaces between quotes, and remove the quoting quotes
     if(!input){
@@ -131,11 +132,5 @@ export async function getNumberbyName(name,client){
     }
     return contact.number;
 }
-
-
-
-
-
-
 
 

@@ -37,7 +37,7 @@ client.initialize();
 client.on('loading_screen', (percent, message) => {
     console.log('LOADING SCREEN', percent, message);
 }); 
-
+//TODO: support matching text to respond
 const commandpros = async () =>{
     return new Promise((resolve,reject) => {
     rl.question('>', async (input) => {
