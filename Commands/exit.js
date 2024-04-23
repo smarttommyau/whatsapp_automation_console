@@ -7,6 +7,6 @@ export function exitCommand(){
     const func = (client,argv) => {
         process.exit(0);
     };
-    return new command(key,func,description,false,"",runnable);
+    return new command(key,func,description,"",false,"",runnable);
 }
 
