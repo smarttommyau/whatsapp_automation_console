@@ -77,10 +77,17 @@ export class logger {
         if(!fs.existsSync(path)){
             return;
         }
-        let jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString());
-        let message = jsonin.findIndex((element) => {
-            return element.id == id;
-        });
+        let jsonin;
+        let message;
+        if(!fs.existsSync(path + "logs.json")){
+            jsonin = [];
+            message = undefined;
+        }else{
+            jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString())
+            message = jsonin.find((element) => {
+                return element.id == id;
+            });
+        }
         if(message){
             //pop message
             if(message['media']){
@@ -107,10 +114,17 @@ export class logger {
         if(!fs.existsSync(path)){
             return;
         }
-        let jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString());
-        let message = jsonin.find((element) => {
-            return element.id == id;
-        });
+        let jsonin;
+        let message;
+        if(!fs.existsSync(path + "logs.json")){
+            jsonin = [];
+            message = undefined;
+        }else{
+            jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString())
+            message = jsonin.find((element) => {
+                return element.id == id;
+            });
+        }
         if(message){
             message['Deleted'] = {
                 "Time":new Date(msg.timestamp*1000).toLocaleString(),
@@ -140,10 +154,17 @@ export class logger {
         //find id in log
         // Found append EDITED MESSAGE: to the section
         // NOT Found append new section
-        let jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString());
-        let message = jsonin.find((element) => {
-            return element.id == id;
-        });
+        let jsonin;
+        let message;
+        if(!fs.existsSync(path + "logs.json")){
+            jsonin = [];
+            message = undefined;
+        }else{
+            jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString())
+            message = jsonin.find((element) => {
+                return element.id == id;
+            });
+        }
         if(message){
             if(!message['Edited']){
                 message['Edited'] = [];
@@ -176,9 +197,8 @@ export class logger {
                 recursive:true
             });
         }
-        let jsonin;
         const jsonout = generateMessageJson(msg,contact,chat,path);
-        //Append to jsonin
+        let jsonin;
         if(!fs.existsSync(path + "logs.json")){
             jsonin = [];
         }else{
