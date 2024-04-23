@@ -47,7 +47,7 @@ async function Cread(client,argv){
                 }
                 await q1();
             }else if(chatss[i].length == 1){
-                chatss[i] = chatss[i][0];question
+                chatss[i] = chatss[i][0];
             }            
         }
         console.log('Marked chat as read');
