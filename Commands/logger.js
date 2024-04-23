@@ -8,7 +8,7 @@ export class logger {
         this.listenfunc = this.client_logger;
     }
     loggerCommand(){
-        const key = ['logger','l'];
+        const key = ['logger','lg'];
         const description = 'Enable/Disable logger';
         const prompt = '';
         const func = this.Clogger.bind(this);
