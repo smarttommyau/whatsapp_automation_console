@@ -44,8 +44,8 @@ export class logger {
         if(this.state){
             client.off('message_create',this.listenfunc);
             client.off('message_edit', this.client_logger_edit);
-            client.off('message_delete_everyone',this.client_loggger_delete_everyone);
-            client.off('message_delete_me',this.client_logger_delete_me);
+            client.off('message_revoke_everyone',this.client_loggger_delete_everyone);
+            client.off('message_revoke_me',this.client_logger_delete_me);
 
             this.state = false;
         }
@@ -55,14 +55,15 @@ export class logger {
         if(!this.state){
             client.on('message_create', this.listenfunc);
             client.on('message_edit', this.client_logger_edit);
-            client.on('message_delete_everyone',this.client_loggger_delete_everyone);
-            client.on('message_delete_me',this.client_logger_delete_me);
+            client.on('message_revoke_everyone',this.client_loggger_delete_everyone);
+            client.on('message_revoke_me',this.client_logger_delete_me);
             this.state = true;
         }
         return [[],argv];
     }
     async client_logger_delete_me(msg){
         const id = msg.id.id;
+        console.log(id)
         const contact = await msg.getContact();
         const chat    = await msg.getChat();
         let path = ""
@@ -79,21 +80,23 @@ export class logger {
         }
         let jsonin;
         let message;
+        let msgIndex;
         if(!fs.existsSync(path + "logs.json")){
             jsonin = [];
             message = undefined;
         }else{
             jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString())
-            message = jsonin.find((element) => {
+            msgIndex = jsonin.findIndex((element) => {
                 return element.id == id;
             });
+            message = jsonin[msgIndex];
         }
         if(message){
             //pop message
             if(message['media']){
                 fs.unlinkSync(path + message['media']['filename']);
             }
-            jsonin.splice(message,1);
+            jsonin.splice(msgIndex,1);
             fs.writeFileSync(path + "logs.json",JSON.stringify(jsonin));
         }
         return;
@@ -197,7 +200,7 @@ export class logger {
                 recursive:true
             });
         }
-        const jsonout = generateMessageJson(msg,contact,chat,path);
+        const jsonout = await generateMessageJson(msg,contact,chat,path);
         let jsonin;
         if(!fs.existsSync(path + "logs.json")){
             jsonin = [];
