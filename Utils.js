@@ -188,7 +188,9 @@ export async function generateMessageJson(msg,contact,chat,path){
         }else{
             filename += (mediaKey||msg.id.id) + "." + mime.extension(media.mimetype);
         }
-        fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
+        if(!fs.existsSync(path + filename)){ //skip file write if already exists
+            fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
+        }
         jsonout['Media'] = {
             'filename':filename
         }
