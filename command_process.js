@@ -56,13 +56,13 @@ export async function processCommand(inputstack,client, readline,tsm,listOfComma
             argv.push(inputstack[0]);
         }
     }
-    if(!command || inputstack[0] === 'help' || inputstack[0] === 'h'){
+    if(!command || inputstack[0] === '--help' || inputstack[0] === '-h'){
         console.log('Help Menu:');
         if(listOfCommands.length === 1 && listOfCommands[0].isarg){
             console.log(listOfCommands[0].parent);
         }else{
             listOfCommands.forEach(command => {
-                console.log('%s - %s',command.key.length?command.key[0]:"args",command.description);
+                console.log('%s - %s',command.key.length?command.key[0]:"<args>",command.description);
             });
         }
         return;
