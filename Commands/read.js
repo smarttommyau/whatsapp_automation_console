@@ -19,9 +19,9 @@ async function Cread(client,argv){
         }
         return [[],argv];
     }else if(argv[0]){
-        let chatss = getChatsbyPartialNames(argv[0],client);
+        let chatss = await getChatsbyPartialNames(argv[0],client);
         //filter chats
-        if(chatss.length === 0||!chats){
+        if(chatss.length === 0||!chatss){
             console.log('Chat not found');
             return [[],argv];
         }
