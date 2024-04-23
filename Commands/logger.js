@@ -1,5 +1,5 @@
 import { command } from '../command_process.js';
-import { printLocation } from '../Utils.js';
+import { printLocation, generateMessageJson } from '../Utils.js';
 import fs from 'node:fs';
 import {Buffer} from 'node:buffer';
 import mimepkg from 'mime-types';
@@ -43,6 +43,10 @@ export class logger {
     async Clogger_disable(client,argv){
         if(this.state){
             client.off('message_create',this.listenfunc);
+            client.off('message_edit', this.client_logger_edit);
+            client.off('message_delete_everyone',this.client_loggger_delete_everyone);
+            client.off('message_delete_me',this.client_logger_delete_me);
+
             this.state = false;
         }
         return [[],argv];
@@ -50,20 +54,78 @@ export class logger {
     async Clogger_enable(client,argv){
         if(!this.state){
             client.on('message_create', this.listenfunc);
+            client.on('message_edit', this.client_logger_edit);
+            client.on('message_delete_everyone',this.client_loggger_delete_everyone);
+            client.on('message_delete_me',this.client_logger_delete_me);
             this.state = true;
         }
         return [[],argv];
     }
-    async client_logger(msg){
-        //TODO: support more types of messages
-        let buffer = "<" + '-'.repeat(20) + ">\n";
+    async client_logger_delete_me(msg){
+        const id = msg.id.id;
         const contact = await msg.getContact();
         const chat    = await msg.getChat();
-        const isbroadcast = msg.broadcast;
-        const chatName = chat.name;
         let path = ""
-        if(!isbroadcast){
-            path = process.cwd() + "/logs/" + chatName + "/";
+        if(!msg.broadcast){
+            path = process.cwd() + "/logs/" + chat.name + "/";
+        }else{
+            path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
+        }
+        if(msg.isStatus){
+            path += "status/";
+        }
+        if(!fs.existsSync(path)){
+            return;
+        }
+        let jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString());
+        let message = jsonin.findIndex((element) => {
+            return element.id == id;
+        });
+        if(message){
+            //pop message
+            if(message['media']){
+                fs.unlinkSync(path + message['media']['filename']);
+            }
+            jsonin.splice(message,1);
+            fs.writeFileSync(path + "logs.json",JSON.stringify(jsonin));
+        }
+        return;
+    }
+    async client_loggger_delete_everyone(msg,omsg){
+        const id = msg.id.id;
+        const contact = await msg.getContact();
+        const chat    = await msg.getChat();
+        let path = ""
+        if(!msg.broadcast){
+            path = process.cwd() + "/logs/" + chat.name + "/";
+        }else{
+            path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
+        }
+        if(msg.isStatus){
+            path += "status/";
+        }
+        if(!fs.existsSync(path)){
+            return;
+        }
+        let jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString());
+        let message = jsonin.find((element) => {
+            return element.id == id;
+        });
+        if(message){
+            message['Deleted'] = {
+                "Time":new Date(msg.timestamp*1000).toLocaleString(),
+            };
+            fs.writeFileSync(path + "logs.json",JSON.stringify(jsonin));
+        }
+        return;
+    }
+    async client_logger_edit(msg,b1,b2){
+        const id = msg.id.id;
+        const contact = await msg.getContact();
+        const chat    = await msg.getChat();
+        let path = ""
+        if(!msg.broadcast){
+            path = process.cwd() + "/logs/" + chat.name + "/";
         }else{
             path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
         }
@@ -75,52 +137,54 @@ export class logger {
                 recursive:true
             });
         }
-        const isMedia = msg.hasMedia; 
-        buffer += "ID: " + msg.id.id + "\n";
-        const from = (contact.name || contact.pushname) +"@"+contact.number;
-        buffer += "From: " + from + "\n";
-        buffer += "Time: " + new Date(msg.timestamp*1000).toLocaleString() + "\n";
-        if(msg.hasQuotedMsg){
-            const quotedMsg = await msg.getQuotedMessage();
-            buffer += `${quotedMsg.id.id}` + ">>";
-            if(quotedMsg.hasMedia){
-                buffer += "media message<<" + "\n";
-            }else{
-                buffer += quotedMsg.body.substring(0,10) + "<<\n";
+        //find id in log
+        // Found append EDITED MESSAGE: to the section
+        // NOT Found append new section
+        let jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString());
+        let message = jsonin.find((element) => {
+            return element.id == id;
+        });
+        if(message){
+            if(!message['Edited']){
+                message['Edited'] = [];
             }
-        }
-        if(isMedia){
-            const media = await msg.downloadMedia();
-            buffer += ">Media message<" + "\n";
-            //save media
-            let filename = "";
-            if(msg.type == MessageTypes.STICKER){
-               filename += "sticker_";
-            }
-            if(media.filename){
-                filename += msg.id.id + "_" + media.filename;
-            }else{
-                filename += msg.id.id + "." + mime.extension(media.mimetype);
-            }
-            fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
-            buffer += "Saved as: " + filename + "\n";
+            message['Edited'].push({
+                "Time":new Date(msg.timestamp*1000).toLocaleString(),
+                "Body":msg.body
+            });    
         }else{
-            buffer += msg.body;
+            message = generateMessageJson(msg,contact,chat,path);
+            jsonin.push(message);
         }
-        if(msg.location){
-            buffer += printLocation(msg.location);
+        fs.writeFileSync(path + "logs.json",JSON.stringify(jsonin));
+    }
+    async client_logger(msg){
+        //TODO: support more types of messages
+        const contact = await msg.getContact();
+        const chat    = await msg.getChat();
+        let path = ""
+        if(!msg.broadcast){
+        }else{
+            path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
         }
-        if(msg.vCards.length){
-            buffer += "vCards:\n";
-            msg.vCards.forEach(vCard => {
-                buffer += vCard + "\n";
+        if(msg.isStatus){
+            path += "status/";
+        }
+        if(!fs.existsSync(path)){
+            fs.mkdirSync(path,{
+                recursive:true
             });
         }
-        if(msg.fowardingScore >0){
-            buffer += "Ff";
+        let jsonin;
+        const jsonout = generateMessageJson(msg,contact,chat,path);
+        //Append to jsonin
+        if(!fs.existsSync(path + "logs.json")){
+            jsonin = [];
+        }else{
+            jsonin = JSON.parse(fs.readFileSync(path + "logs.json").toString())
         }
-        buffer += "\n";
-        fs.appendFileSync(path + "log.txt",buffer);
+        jsonin.push(jsonout);
+        fs.writeFileSync(path + "logs.json",JSON.stringify(jsonin));
     }
 
 }

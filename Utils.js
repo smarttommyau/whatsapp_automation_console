@@ -134,3 +134,52 @@ export async function getNumberbyName(name,client){
 }
 
 
+export async function generateMessageJson(msg,contact,chat,path){
+    let jsonout = {};
+    const isMedia = msg.hasMedia; 
+    jsonout['id'] = msg.id.id;
+    const from = (contact.name || contact.pushname) +"@"+contact.number;
+    jsonout['From'] = from;
+    jsonout['Time'] = new Date(msg.timestamp*1000).toLocaleString();
+    if(msg.hasQuotedMsg){
+        const quotedMsg = await msg.getQuotedMessage();
+        let quotedjson ={};
+        quotedjson['id'] = quotedMsg.id.id;
+        if(quotedMsg.hasMedia){
+            quotedjson['media'] = true;
+        }else{
+            quotedjson['media'] = false;
+        }
+        quotedjson['body'] = quotedMsg.body.substring(0,10);
+        jsonout['Quoted'] = quotedjson;
+    }
+    if(isMedia){
+        const media = await msg.downloadMedia();
+
+        //save media
+        let filename = "";
+        if(msg.type == MessageTypes.STICKER){
+           filename += "sticker_";
+        }
+        if(media.filename){
+            filename += msg.id.id + "_" + media.filename;
+        }else{
+            filename += msg.id.id + "." + mime.extension(media.mimetype);
+        }
+        fs.writeFileSync(path + filename,Buffer.from(media.data,'base64'));
+        jsonout['Media'] = {
+            'filename':media.filename
+        }
+    }
+    jsonout['Body'] = msg.body;
+    if(msg.location){
+        jsonout['Location'] = msg.location;
+    }
+    if(msg.vCards.length){
+        jsonout['vCards'] = msg.vCards;
+    }
+    if(msg.fowardingScore >0){
+        jsonout['Forwarding Score'] = msg.forwardingScore;
+    }
+    return jsonout;
+}
