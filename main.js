@@ -6,6 +6,7 @@ import readline from 'node:readline';
 import { sendCommand } from './Commands/send.js';
 import { retrieveCommand } from './Commands/retrieve.js';
 import { chatsCommand } from './Commands/chats.js';
+import { readCommand } from './Commands/read.js';
 import { scheduleCommand } from './Commands/schedule.js';
 import { tasksCommand } from './Commands/tasks.js';
 import { timeCommand } from './Commands/time.js';
@@ -45,6 +46,7 @@ const commandpros = async () =>{
             sendCommand(),
             retrieveCommand(),
             chatsCommand(),
+            readCommand(),
             scheduleCommand(),
             tasksCommand(),
             message_logger.loggerCommand(),
