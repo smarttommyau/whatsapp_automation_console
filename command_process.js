@@ -58,12 +58,13 @@ export async function processCommand(inputstack,client, readline,tsm,listOfComma
     }
     if(!command || inputstack[0] === 'help' || inputstack[0] === 'h'){
         console.log('Help Menu:');
-        if(listOfCommands.length === 1 && isarg){
+        if(listOfCommands.length === 1 && listOfCommands[0].isarg){
             console.log(listOfCommands[0].parent);
+        }else{
+            listOfCommands.forEach(command => {
+                console.log('%s - %s',command.key.length?command.key[0]:"args",command.description);
+            });
         }
-        listOfCommands.forEach(command => {
-            console.log('%s - %s',command.key[0],command.description);
-        });
         return;
     }
     
