@@ -2,6 +2,10 @@ import terminalImage from 'terminal-image';
 import { Buffer } from 'node:buffer';
 import sharp from 'sharp';
 import fs from 'node:fs';
+import whtswebjspkg from 'whatsapp-web.js';
+const { MessageTypes } = whtswebjspkg;
+import mimepkg from 'mime-types';
+const mime = mimepkg;
 export function processInput(input){
     //split by space but ignore spaces between quotes, and remove the quoting quotes
     if(!input){
@@ -134,11 +138,28 @@ export async function getNumberbyName(name,client){
 }
 
 
+export function formatFrom(contact){
+    return (contact.name || contact.pushname) +"@"+contact.number;
+}
+
+export function logpath(msg,chat,contact){
+    let path = ""
+    if(!msg.broadcast){
+        path = process.cwd() + "/logs/" + chat.name + "/";
+    }else{
+        path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
+    }
+    if(msg.isStatus){
+        path += "status/";
+    }
+    return path;
+}
+
 export async function generateMessageJson(msg,contact,chat,path){
     let jsonout = {};
     const isMedia = msg.hasMedia; 
     jsonout['id'] = msg.id.id;
-    const from = (contact.name || contact.pushname) +"@"+contact.number;
+    const from = formatFrom(contact);
     jsonout['From'] = from;
     jsonout['Time'] = new Date(msg.timestamp*1000).toLocaleString();
     if(msg.hasQuotedMsg){

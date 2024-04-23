@@ -205,7 +205,7 @@ async function Ctasks_clean(client,argv){
     let exclude_ids = argv.slice(0,-2).sort((a, b) => b - a );
     exclude_ids = exclude_ids.map((id) => +id);
     //convert exclude_ids to integers
-    for (i=tsm.tasks.length -1;i>=0;i--){
+    for (let i=tsm.tasks.length -1;i>=0;i--){
         if(tsm.tasks[i].paused&&!exclude_ids.includes(i)){
             tsm.removeTask(i);
         }
