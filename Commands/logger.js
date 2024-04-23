@@ -164,6 +164,7 @@ export class logger {
         const chat    = await msg.getChat();
         let path = ""
         if(!msg.broadcast){
+            path = process.cwd() + "/logs/" + chat.name + "/";
         }else{
             path = process.cwd() + "/logs/broadcasts/" +contact.name + "/";
         }
