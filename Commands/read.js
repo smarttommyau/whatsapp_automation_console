@@ -25,31 +25,31 @@ async function Cread(client,argv){
             console.log('Chat not found');
             return [[],argv];
         }
-        chatss.forEach(async (chats) => {
-            if(chats.length > 1){
+        for(const i in chatss){
+            if(chatss[i].length > 1){
                 console.log('Multiple chats found:');
-                chats.forEach((chats,i) => {
+                chatss[i].forEach((chats,i) => {
                     console.log("%d: %s",i,chats.name);
                 });
                 const q1 = () => {
                     return new Promise((resolve,reject) => {
                         readline.question('Select chat by number:', (input) => {
-                            let selectedChat = chats[Number.parseInt(input)];
+                            let selectedChat = chatss[i][Number.parseInt(input)];
                             if (!selectedChat) {
                                 console.log('Invalid chat number');
                                 return [[],argv];
                             }
-                            chats = selectedChat;
+                            chatss[i] = selectedChat;
                             resolve();
                             return;
                         });
                     });
                 }
                 await q1();
-            }else if(chats.length == 1){
-                chats = chats[0];
+            }else if(chatss[i].length == 1){
+                chatss[i] = chatss[i][0];question
             }            
-        });
+        }
         console.log('Marked chat as read');
         chatss.forEach(async (chat) => {
             console.log(chat.name)
