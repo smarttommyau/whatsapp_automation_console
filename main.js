@@ -80,6 +80,7 @@ console.log(err.stack);
 process.exit(0);
 });
 process.on('exit', () => {
+console.log(new Date().toLocaleString());
 console.log('Destroying Session....');
 client.destroy();
 console.log('Bye Bye')
