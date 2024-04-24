@@ -87,8 +87,12 @@ export async function printMessage(message,client=undefined){
     // console.log("-".repeat(process.stdout.columns - 2))
     let from ="From:";
     if(client){
-        const contact = await client.getContactById(message.from);
-        from += contact.name||contact.pushname;
+        if(message.fromMe){
+            from += "Me";
+        }else{
+            const contact = await client.getContactById(message.from);
+            from += contact.name||contact.pushname;
+        }
     }
     if(message.author){
         if(client){
@@ -160,7 +164,7 @@ export async function generateMessageJson(msg,contact,chat,path){
     const isMedia = msg.hasMedia; 
     jsonout['id'] = msg.id.id;
     const from = formatFrom(contact);
-    jsonout['From'] = from;
+    jsonout['From'] = msg.fromMe? "Me":from;
     jsonout['Time'] = new Date(msg.timestamp*1000).toLocaleString();
     if(msg.hasQuotedMsg){
         const quotedMsg = await msg.getQuotedMessage();
