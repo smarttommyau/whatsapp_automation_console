@@ -2,6 +2,8 @@ import { command } from '../command_process.js';
 import { printLocation, generateMessageJson, formatFrom, logpath } from '../Utils.js';
 import fs from 'node:fs';
 import {Buffer} from 'node:buffer';
+//TODO: use database(make logs more sustainable) 
+//TODO: generate md or webpage(more readable) as output
 export class logger {
     constructor(){
         this.state = false;
