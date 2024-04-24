@@ -47,7 +47,7 @@ function processContent(message){
 //Format <Content Type::Content|COntent Path(default path:media/)>
     const msg = message.match(/<[^>]*>/g);
     let options = {};
-        if(msg === null|| msg.length !== 1){
+    if(msg === null|| msg.length !== 1){
         return undefined;
     }
     let content = msg[0];

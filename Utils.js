@@ -174,8 +174,8 @@ export async function generateMessageJson(msg,contact,chat,path){
         quotedjson['body'] = quotedMsg.body.substring(0,10);
         jsonout['Quoted'] = quotedjson;
     }
-    const mediaKey = msg.mediaKey.replaceAll('/','_').replaceAll('=','').replaceAll('+','_');
     if(isMedia){
+        const mediaKey = msg.mediaKey.replaceAll('/','_').replaceAll('=','').replaceAll('+','_');
         //check if media is already downloaded
         let media;
         let filename = fs.readdirSync(path).find((file)=>file.includes(mediaKey));
