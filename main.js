@@ -14,7 +14,7 @@ import { exitCommand } from './Commands/exit.js';
 import { logger } from './Commands/logger.js';
 import { task_manager } from './task_manager.js';
 import { processInput } from './Utils.js';
-const wwebVersion = '2.2412.54';
+const wwebVersion = '2.3000.1028442591-alpha';
 const client = new Client({
     puppeteer: {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
